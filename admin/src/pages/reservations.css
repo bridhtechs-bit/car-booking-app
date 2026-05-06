@@ -1,0 +1,10 @@
+.reservations-container {
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+}
+
+.reservations-container h2 {
+  margin-bottom: 20px;
+  color: #333;
+}

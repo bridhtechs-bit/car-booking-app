@@ -1,0 +1,289 @@
+/* Page Container */
+.bookings-page {
+  padding: 40px 20px;
+  background: #f8f9fa;
+  min-height: calc(100vh - 80px);
+}
+
+.bookings-page .container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Page Header */
+.page-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.page-header h1 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.page-header p {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+/* Alerts */
+.alert {
+  padding: 15px 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  font-weight: 600;
+  animation: slideIn 0.3s ease;
+}
+
+.alert-success {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Bookings Container */
+.bookings-container {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* Bookings List */
+.bookings-list {
+  padding: 20px;
+}
+
+.booking-card {
+  display: grid;
+  grid-template-columns: 150px 1fr auto;
+  gap: 25px;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+}
+
+.booking-card:hover {
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+  border-color: #667eea;
+}
+
+/* Car Image */
+.car-image {
+  width: 160px;
+  height: 100px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f0f0f0;
+}
+
+.car-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Car Details */
+.car-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.car-detail h3 {
+  font-size: 1.2rem;
+  color: #333;
+  margin: 0;
+  font-weight: 600;
+}
+
+.car-detail p {
+  color: #666;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.car-category {
+  display: inline-block;
+  background: #f0f0f0;
+  color: #666;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  width: fit-content;
+}
+
+.booking-status {
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: inline-block;
+  width: fit-content;
+}
+
+.booking-status.pending {
+  background: #dba904;
+  color: #fff;
+}
+
+.booking-status.approved {
+  background: #d4edda;
+  color: #155724;
+}
+
+.booking-status.completed {
+  background: #e7e8ea;
+  color: #383d41;
+}
+
+.booking-status.cancelled {
+  background: #f8d7da;
+  color: #842029;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 150px;
+}
+
+.actions button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-approve {
+  background: #667eea;
+  color: white;
+}
+
+.btn-approve:hover {
+  background: #5568d3;
+  transform: translateY(-2px);
+}
+
+.btn-pending {
+  background: #ffc107;
+  color: white;
+}
+
+.btn-pending:hover {
+  background: #e0a800;
+  transform: translateY(-2px);
+}
+
+.btn-cancel {
+  background: #dc3545;
+  color: white;
+}
+
+.btn-cancel:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+}
+
+/* No Bookings */
+.no-bookings {
+  background: white;
+  border-radius: 12px;
+  padding: 60px 20px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.empty-state h2 {
+  font-size: 1.8rem;
+  color: #333;
+  margin: 0;
+}
+
+.empty-state p {
+  color: #666;
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Loading */
+.loading {
+  text-align: center;
+  padding: 60px 20px;
+  font-size: 1.1rem;
+  color: #666;
+}
+
+/* Error */
+.error {
+  color: #842029;
+  background: #f8d7da;
+  padding: 15px 20px;
+  border-radius: 8px;
+  border: 1px solid #f5c6cb;
+  margin-bottom: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .booking-card {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .booking-card > div {
+    width: 100%;
+  }
+  
+  .car-image {
+    width: 100%;
+    height: 200px;
+  }
+  
+  .actions {
+    flex-direction: row;
+    min-width: auto;
+  }
+  
+  .actions button {
+    flex: 1;
+  }
+  
+  .page-header h1 {
+    font-size: 2rem;
+  }
+}

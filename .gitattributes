@@ -1,0 +1,37 @@
+# Git Attributes for Line Endings
+* text=auto
+
+# Scripts
+*.sh text eol=lf
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+
+# Configs
+*.json text
+*.yaml text
+*.yml text
+*.toml text
+
+# Documentation
+*.md text
+
+# Code
+*.js text
+*.jsx text
+*.ts text
+*.tsx text
+*.java text
+*.py text
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.mov binary
+*.mp4 binary
+*.zip binary
+*.gz binary
+*.rar binary
+*.7z binary

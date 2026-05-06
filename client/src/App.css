@@ -1,0 +1,119 @@
+:root {
+  /* ===== Couleurs principales ===== */
+  --primary-color: #1e293b;        /* Bleu nuit (header, navbar) */
+  --secondary-color: #2563eb;      /* Bleu moderne (liens, focus) */
+  --accent-color: #f97316;         /* Orange premium (CTA, payer) */
+
+  /* ===== Backgrounds ===== */
+  --bg-main: #f8fafc;              /* Fond général */
+  --bg-card: #ffffff;              /* Cartes */
+  --bg-section: #f1f5f9;           /* Sections secondaires */
+  --bg-dark: #0f172a;              /* Footer / header sombre */
+
+  /* ===== Textes ===== */
+  --text-primary: #0f172a;         /* Texte principal */
+  --text-secondary: #475569;       /* Texte secondaire */
+  --text-muted: #94a3b8;           /* Placeholder / hints */
+  --text-light: #ffffff;           /* Texte sur fond sombre */
+
+  /* ===== Boutons ===== */
+  --btn-primary-bg: #2563eb;
+  --btn-primary-text: #ffffff;
+  --btn-primary-hover: #1d4ed8;
+
+  --btn-accent-bg: #f97316;
+  --btn-accent-text: #ffffff;
+  --btn-accent-hover: #ea580c;
+
+  /* ===== États ===== */
+  --success-color: #16a34a;        /* Paiement OK */
+  --warning-color: #facc15;
+  --error-color: #dc2626;
+
+  /* ===== Bordures & ombres ===== */
+  --border-color: #e5e7eb;
+  --border-radius: 12px;
+
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 10px 25px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 20px 40px rgba(0, 0, 0, 0.12);
+
+  /* ===== Inputs ===== */
+  --input-bg: #ffffff;
+  --input-border: #cbd5f5;
+  --input-focus: #2563eb;
+
+  /* ===== Gradients ===== */
+  --gradient-primary: linear-gradient(135deg, #2563eb, #1e40af);
+  --gradient-accent: linear-gradient(135deg, #f97316, #ea580c);
+}
+;body {
+  background-color: var(--bg-main);
+  color: var(--text-primary);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+a {
+  color: var(--secondary-color);
+  text-decoration: none;
+}
+a:hover {
+  color: var(--btn-primary-hover);
+}
+
+.button {
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.button:hover {
+  background-color: var(--btn-primary-hover);
+}
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  margin: 0 0 10px 0;
+}
+p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+input, select, textarea {
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: var(--border-radius);
+  padding: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: var(--input-focus);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.3);
+}
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-sm);
+  padding: 20px;
+  margin: 10px 0;
+}
+.section {
+  background-color: var(--bg-section);
+  padding: 40px 20px;
+  margin: 20px 0;
+}
+.header, .footer {
+  background-color: var(--bg-dark);
+  color: var(--text-light);
+  padding: 20px;
+}
+.header a, .footer a {
+  color: var(--text-light);
+}
