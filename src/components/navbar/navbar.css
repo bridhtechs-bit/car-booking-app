@@ -1,0 +1,11 @@
+.nav-logo{
+    height: 40px;
+    max-width: 100px;
+}
+
+.d-center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+}
