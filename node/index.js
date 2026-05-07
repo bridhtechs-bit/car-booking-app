@@ -134,26 +134,6 @@ app.get("/", (req, res) => {
 });
 
 
-//get movies from this link
-const url = "https://123movienow.cc/spa/videoPlayPage/movies/bel-air-version-francaise-ad8KTmVZkB2?id=2184055813143152208&type=/movie/detail&detailSe=&detailEp=&lang=fr"
-
-app.get('/movie',async (req,res)=>{
-  try{
-    const response = await fetch(url);
-    const data = await response.json();
-    res.status(200).json({
-      success: true,
-      data: data,
-    });
-  }catch(error){
-    logger.error('❌ Failed to fetch movie data', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to fetch movie data',
-    });
-  }
-})
-
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     success: true,
@@ -179,7 +159,7 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 // ========== SERVER INITIALIZATION ==========
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 10000;
 
 const startServer = async () => {
   try {
