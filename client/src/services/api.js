@@ -1,14 +1,14 @@
 import axios from 'axios';
 import { getTokenFromLocalStorage, clearUserFromLocalStorage } from '../utils/tokenUtil';
 
-/**
- * Axios instance configured to communicate with the backend
- * - Auto-includes JWT token in Authorization header
- * - Handles 401 errors by redirecting to login
- * - Uses environment variable for API base URL
- */
+// On définit explicitement la priorité : 
+// 1. La variable d'environnement (Netlify)
+// 2. Si absente, l'URL Render en dur (pour dépanner)
+// 3. Si tout échoue, localhost (pour le dev)
+const baseURL = process.env.REACT_APP_API_URL || "https://car-booking-app-server.onrender.com";
+
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
