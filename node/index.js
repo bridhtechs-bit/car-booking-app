@@ -56,7 +56,7 @@ app.use(helmet());
 // CORS Configuration
 const corsOptions = {
   origin: [
-    "https://bridh-drivio-client-side.netlify.app/"
+    "https://bridh-drivio-client.netlify.app/"
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: "true",
