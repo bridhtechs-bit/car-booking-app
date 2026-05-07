@@ -159,7 +159,7 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 // ========== SERVER INITIALIZATION ==========
-const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
