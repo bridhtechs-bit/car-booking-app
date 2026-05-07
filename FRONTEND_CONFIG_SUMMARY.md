@@ -17,7 +17,7 @@ export const base_url = 'http://localhost:8000/api';
 
 **Après**:
 ```javascript
-export const base_url = process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000/api';
+export const base_url = process.env.REACT_APP_API_URL || 'https://car-booking-app-server.onrender.com/api';
 ```
 
 **Raison**: Le backend tourne sur le port 5000, pas 8000.
