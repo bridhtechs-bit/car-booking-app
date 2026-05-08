@@ -1,16 +1,3 @@
-/**
- * ========================================
- * ENTRY POINT - index.js
- * ========================================
- * Unified server initialization with:
- * - Environment variables loading
- * - Express app configuration
- * - Security middleware
- * - Database connection
- * - Email service initialization
- * - Error handling
- */
-
 import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
@@ -41,6 +28,8 @@ dotenv.config();
 
 // ========== CREATE EXPRESS APP ==========
 const app = express();
+// ========== SERVER INITIALIZATION ==========
+const PORT = process.env.PORT || 5000;
 
 // ========== LOGGING ==========
 app.use(morgan("combined", {
@@ -157,9 +146,6 @@ app.use(notFoundHandler);
 
 // Global Error Handler - must be last
 app.use(errorHandler);
-
-// ========== SERVER INITIALIZATION ==========
-const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
