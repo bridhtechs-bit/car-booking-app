@@ -45,7 +45,7 @@ router.delete('/delete/:_id', protect, adminProtect, validateMongoId, deleteCar)
 router.put('/:_id/availability', protect, adminProtect, validateMongoId, changeAvailability);
 
 // Featured status change with validation (Admin only)
-router.put('/:_id/featured', protect, adminProtect, validateMongoId, changeFeatured);
+router.put('/:_id', protect, adminProtect, validateMongoId, changeFeatured);
 
 // Get car by ID (must be last) with validation
 router.get('/:_id', validateMongoId, getCarById);
