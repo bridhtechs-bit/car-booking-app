@@ -23,7 +23,7 @@ const getCars = async () => {
 const toggleFeatured = async (id, featured) => {
   try {
     if (!id) throw new Error('Car ID is required');
-    const url = `/cars/${id}`;
+    const url = `/cars/${id}/featured`;
     const response = await api.put(url, { featured });
     return response.data?.data || response.data;
   } catch (error) {

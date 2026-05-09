@@ -31,6 +31,8 @@ router.get('/category', getCarsByCategory);
 
 // Protected routes (Admin only)
 router.get('/mycars', protect, adminProtect, getMyCars);
+// Featured status change with validation (Admin only)
+router.put('/:_id/featured', protect, adminProtect, validateMongoId, changeFeatured);
 
 // Create car with validation (Admin only)
 router.post('/create', protect, adminProtect, validateCreateCar, createCar);
@@ -43,9 +45,6 @@ router.delete('/delete/:_id', protect, adminProtect, validateMongoId, deleteCar)
 
 // Availability change with validation (Admin only)
 router.put('/:_id/availability', protect, adminProtect, validateMongoId, changeAvailability);
-
-// Featured status change with validation (Admin only)
-router.put('/:_id', protect, adminProtect, validateMongoId, changeFeatured);
 
 // Get car by ID (must be last) with validation
 router.get('/:_id', validateMongoId, getCarById);
