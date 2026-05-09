@@ -20,10 +20,10 @@ const getCars = async () => {
  * @param {boolean} featured - Featured status
  * @returns {object} - Updated car
  */
-const toggleFeatured = async (id, featured) => {
+const toggleFeatured = async (_id, featured) => {
   try {
-    if (!id) throw new Error('Car ID is required');
-    const url = `/cars/${id}/featured`;
+    if (!_id) throw new Error('Car ID is required');
+    const url = `/cars/${_id}/featured`;
     const response = await api.put(url, { featured });
     return response.data?.data || response.data;
   } catch (error) {
@@ -51,10 +51,10 @@ const getAdminCars = async () => {
  * @param {string} id - Car ID
  * @returns {object} - Car details
  */
-const getCarById = async (id) => {
+const getCarById = async (_id) => {
   try {
-    if (!id) throw new Error('Car ID is required');
-    const url = `/cars/${id}`;
+    if (!_id) throw new Error('Car ID is required');
+    const url = `/cars/${_id}`;
     const response = await api.get(url);
     return response.data;
   } catch (error) {
@@ -84,10 +84,10 @@ const createCar = async (carData) => {
  * @param {object} updateData - Fields to update
  * @returns {object} - Updated car
  */
-const updateCar = async (id, updateData) => {
+const updateCar = async (_id, updateData) => {
   try {
-    if (!id) throw new Error('Car ID is required');
-    const url = `/cars/update/${id}`;
+    if (!_id) throw new Error('Car ID is required');
+    const url = `/cars/update/${_id}`;
     const response = await api.put(url, updateData);
     return response.data?.data || response.data;
   } catch (error) {
@@ -98,12 +98,12 @@ const updateCar = async (id, updateData) => {
 
 /**
  * Delete car listing
- * @param {string} id - Car ID
+ * @param {string} _id - Car ID
  */
-const deleteCar = async (id) => {
+const deleteCar = async (_id) => {
   try {
-    if (!id) throw new Error('Car ID is required');
-    const url = `/cars/delete/${id}`;
+    if (!_id) throw new Error('Car ID is required');
+    const url = `/cars/delete/${_id}`;
     await api.delete(url);
   } catch (error) {
     console.error('Delete car error:', error.response?.data || error.message);
