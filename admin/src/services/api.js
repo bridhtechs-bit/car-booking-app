@@ -8,7 +8,7 @@ import { getTokenFromLocalStorage, clearUserFromLocalStorage } from '../utils/to
  * - Uses environment variable for API base URL
  */
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
+  baseURL: 'https://car-booking-app-server.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
