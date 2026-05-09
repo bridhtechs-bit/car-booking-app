@@ -1,35 +1,46 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import "./dashboard.css";
+import {useDispatch, useSelector} from 'react-redux';
 import { FaCarAlt, FaCalendarCheck, FaUser } from "react-icons/fa";
 import { FaMoneyCheckDollar } from "react-icons/fa6";
+import { getAdminCar} from '../features/cars/carsSlice';
 
 const Dashboard = () => {
+
+  //recuperation des données de voitures pour les statistiques
+     const dispatch = useDispatch();
+     const { cars, car, loading, isSuccess } = useSelector((state) => state.cars);
+
+    useEffect(() => {
+      dispatch(getAdminCar());
+    }, [dispatch]);
+    
   // Données des voitures récemment ajoutées
-  const recentVehicles = [
-    {
-      id: 1,
-      name: "BMW 7 Series i7",
-      category: "PREMIUM",
-      price: "$185/day",
-      fuel: "Electric",
-      year: 2024,
-      seats: 4,
-      range: "480 mi",
-      image: "https://images.unsplash.com/photo-1567818735868-e71b99932e29?w=400&h=250&fit=crop"
-    },
-    {
-      id: 2,
-      name: "Porsche 911 Carrera",
-      category: "SPORT",
-      price: "$240/day",
-      fuel: "Gasoline",
-      year: 2023,
-      seats: 2,
-      performance: "3.4s 0-60",
-      image: "https://images.unsplash.com/photo-1552820728-8ac41f1ce891?w=400&h=250&fit=crop"
-    }
-  ];
+    const recentVehicles = [
+      {
+        id: 1,
+        name: "BMW 7 Series i7",
+        category: "PREMIUM",
+        price: "$185/day",
+        fuel: "Electric",
+        year: 2024,
+        seats: 4,
+        range: "480 mi",
+        image: "https://images.unsplash.com/photo-1567818735868-e71b99932e29?w=400&h=250&fit=crop"
+      },
+      {
+        id: 2,
+        name: "Porsche 911 Carrera",
+        category: "SPORT",
+        price: "$240/day",
+        fuel: "Gasoline",
+        year: 2023,
+        seats: 2,
+        performance: "3.4s 0-60",
+        image: "https://images.unsplash.com/photo-1552820728-8ac41f1ce891?w=400&h=250&fit=crop"
+      }
+    ];
 
   // Données de distribution de flotte
   const fleetDistribution = [
@@ -121,33 +132,33 @@ const Dashboard = () => {
                   <Link to="/admin/cars" className='view-all-link'>View All Fleet →</Link>
                 </div>
                 <div className='vehicle-cards'>
-                  {recentVehicles.map((vehicle) => (
-                    <div key={vehicle.id} className='vehicle-card'>
-                      <div className='vehicle-category-badge'>{vehicle.category}</div>
-                      <img src={vehicle.image} alt={vehicle.name} className='vehicle-image' />
+                  {cars.map((car) => (
+                    <div key={car._id} className='vehicle-card'>
+                      <div className='vehicle-category-badge'>{car.category}</div>
+                      <img src={car.image} alt={car.name} className='vehicle-image' />
                       <div className='vehicle-info'>
-                        <h4>{vehicle.name}</h4>
+                        <h4>{car.name}</h4>
                         <p className='vehicle-specs'>
-                          {vehicle.fuel} • {vehicle.year}
+                          {car.fuel} • {car.year}
                         </p>
                         <div className='vehicle-details'>
-                          {vehicle.seats && (
+                          {car.seats && (
                             <span className='detail-item'>
-                              🪑 {vehicle.seats} Seats
+                              🪑 {car.seats} Seats
                             </span>
                           )}
-                          {vehicle.range && (
+                          {car.range && (
                             <span className='detail-item'>
-                              🔋 {vehicle.range}
+                              🔋 {car.range}
                             </span>
                           )}
-                          {vehicle.performance && (
+                          {car.performance && (
                             <span className='detail-item'>
-                              ⚡ {vehicle.performance}
+                              ⚡ {car.performance}
                             </span>
                           )}
                         </div>
-                        <div className='vehicle-price'>{vehicle.price}</div>
+                        <div className='vehicle-price'>{car.price}</div>
                       </div>
                     </div>
                   ))}
