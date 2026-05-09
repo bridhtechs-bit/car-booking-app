@@ -163,10 +163,10 @@ const createCar = asyncHandler(async (req, res, next) => {
 
 // CHANGE featured flag
 const changeFeatured = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
+  const { _id } = req.params;
   const { featured } = req.body;
   
-  const car = await Car.findById(id);
+  const car = await Car.findById(_id);
   
   if (!car) {
     const error = new Error("Voiture non trouvée");
@@ -186,10 +186,10 @@ const changeFeatured = asyncHandler(async (req, res, next) => {
 
 // UPDATE car
 const updateCar = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
+  const { _id } = req.params;
   const updateData = req.body;
   
-  const car = await Car.findById(id);
+  const car = await Car.findById(_id);
   
   if (!car) {
     const error = new Error("Voiture non trouvée");
@@ -197,7 +197,7 @@ const updateCar = asyncHandler(async (req, res, next) => {
     throw error;
   }
   
-  const updatedCar = await Car.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+  const updatedCar = await Car.findByIdAndUpdate(_id, updateData, { new: true, runValidators: true });
   
   res.status(200).json({
     success: true,
@@ -208,9 +208,9 @@ const updateCar = asyncHandler(async (req, res, next) => {
 
 // DELETE car
 const deleteCar = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
+  const { _id } = req.params;
   
-  const car = await Car.findById(id);
+  const car = await Car.findById(_id);
   
   if (!car) {
     const error = new Error("Voiture non trouvée");
@@ -218,7 +218,7 @@ const deleteCar = asyncHandler(async (req, res, next) => {
     throw error;
   }
   
-  await Car.findByIdAndDelete(id);
+  await Car.findByIdAndDelete(_id);
   
   res.status(200).json({
     success: true,
@@ -229,10 +229,10 @@ const deleteCar = asyncHandler(async (req, res, next) => {
 
 // CHANGE availability
 const changeAvailability = asyncHandler(async (req, res, next) => {
-  const { id } = req.params;
+  const { _id } = req.params;
   const { available } = req.body;
   
-  const car = await Car.findById(id);
+  const car = await Car.findById(_id);
   
   if (!car) {
     const error = new Error("Voiture non trouvée");
