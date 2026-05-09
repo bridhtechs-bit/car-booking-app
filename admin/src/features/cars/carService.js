@@ -15,6 +15,24 @@ const getCars = async () => {
 };
 
 /**
+ * Toggle featured status of a car
+ * @param {string} id - Car ID
+ * @param {boolean} featured - Featured status
+ * @returns {object} - Updated car
+ */
+const toggleFeatured = async (id, featured) => {
+  try {
+    if (!id) throw new Error('Car ID is required');
+    const url = `/cars/${id}`;
+    const response = await api.put(url, { featured });
+    return response.data?.data || response.data;
+  } catch (error) {
+    console.error('Toggle featured error:', error.response?.data || error.message);
+    throw error.response?.data || error.message;
+  }
+};
+
+/**
  * Get cars owned by current admin user
  * @returns {array} - List of admin's cars
  */
@@ -89,24 +107,6 @@ const deleteCar = async (id) => {
     await api.delete(url);
   } catch (error) {
     console.error('Delete car error:', error.response?.data || error.message);
-    throw error.response?.data || error.message;
-  }
-};
-
-/**
- * Toggle featured status of a car
- * @param {string} id - Car ID
- * @param {boolean} featured - Featured status
- * @returns {object} - Updated car
- */
-const toggleFeatured = async (id, featured) => {
-  try {
-    if (!id) throw new Error('Car ID is required');
-    const url = `/cars/${id}`;
-    const response = await api.put(url, { featured });
-    return response.data?.data || response.data;
-  } catch (error) {
-    console.error('Toggle featured error:', error.response?.data || error.message);
     throw error.response?.data || error.message;
   }
 };
