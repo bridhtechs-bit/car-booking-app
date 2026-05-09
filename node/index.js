@@ -45,7 +45,8 @@ app.use(helmet());
 // CORS Configuration
 const corsOptions = {
   origin: [
-    "https://bridh-drivio-client.netlify.app"
+    "https://car-booking-app-client.onrender.com",
+    "https://car-booking-app-admin.onrender.com"
   ],
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
   credentials: "true",
