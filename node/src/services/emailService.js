@@ -46,6 +46,58 @@ export const initializeEmailService = async () => {
 };
 
 /**
+ * Send notification to Admin/Owner about a new booking request
+ */
+export const sendAdminNotificationEmail = async (booking, user, car) => {
+  try {
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; line-height: 1.6; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; }
+            .header { background-color: #2d3748; color: white; padding: 15px; text-align: center; }
+            .highlight { color: #667eea; font-weight: bold; }
+            .details { background: #f7fafc; padding: 15px; border-radius: 5px; }
+            .button { display: inline-block; background: #667eea; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; margin-top: 15px; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header"><h1>Nouvelle Demande de Réservation</h1></div>
+            <div class="content">
+              <p>Bonjour Admin,</p>
+              <p>Une nouvelle réservation vient d'être effectuée par <span class="highlight">${user.name}</span> (${user.email}).</p>
+              
+              <div class="details">
+                <p><strong>Véhicule :</strong> ${car.name}</p>
+                <p><strong>Période :</strong> du ${new Date(booking.startDate).toLocaleDateString()} au ${new Date(booking.endDate).toLocaleDateString()}</p>
+                <p><strong>Montant Total :</strong> $${booking.totalAmount}</p>
+              </div>
+              
+              <p>Merci de vous connecter au panel d'administration pour valider ou refuser cette demande.</p>
+              <center>
+                <a href="${process.env.ADMIN_URL || 'http://localhost:3000/admin'}" class="button">Accéder au Panel</a>
+              </center>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+
+    await sendEmail({
+      to: process.env.GMAIL_USER, // L'admin reçoit l'email sur son adresse de gestion
+      subject: `🚨 Nouvelle réservation : ${car.name} par ${user.name}`,
+      html,
+    });
+    logger.success('Admin notification email sent');
+  } catch (error) {
+    logger.error('Failed to send admin notification email', error);
+  }
+};
+
+/**
  * Send email using configured service
  * using nodemailer and gmail as default, but can be extended to support SendGrid or others
  */
@@ -394,4 +446,5 @@ export default {
   sendPasswordResetEmail,
   sendWelcomeEmail,
   sendCancellationEmail,
+  sendAdminNotificationEmail,
 };

@@ -1,6 +1,10 @@
 import Booking from '../models/bookingModel.js';
 import carModel from '../models/carModel.js';
-
+import { 
+  sendAdminNotificationEmail, 
+  sendBookingConfirmationEmail, 
+  sendCancellationEmail 
+} from '../services/emailService.js';
 
 // Check availability of a car for a date range
 const checkAvailability = async (carId, startDate, endDate) => {
@@ -12,7 +16,6 @@ const checkAvailability = async (carId, startDate, endDate) => {
 
   return bookings.length === 0;
 };
-
 
 // Check availability of cars for the given date and location
 const checkAvailabilityOfCar = async (req, res) => {
@@ -34,7 +37,6 @@ const checkAvailabilityOfCar = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
 
 // API to create booking (authenticated endpoint using params)
 const createNewBooking = async (req, res) => {
@@ -66,6 +68,10 @@ const createNewBooking = async (req, res) => {
       totalPrice
     });
 
+    // --- Notification Email Admin ---
+    const fullBooking = await Booking.findById(booking._id).populate('userId').populate('carId');
+    sendAdminNotificationEmail(fullBooking, fullBooking.userId, fullBooking.carId).catch(console.error);
+
     res.status(201).json({ success: true, message: 'Booking created', data: booking });
   } catch (error) {
     console.log(error.message);
@@ -73,19 +79,16 @@ const createNewBooking = async (req, res) => {
   }
 };
 
-
 // Create booking (generic endpoint)
 const createBooking = async (req, res) => {
   try {
     let userId = req.user?.id || req.body.userId;
     let { carId, startDate, endDate, totalPrice } = req.body;
 
-    // If user is authenticated, prefer req.user
     if (req.user && req.user._id) {
       userId = req.user._id;
     }
 
-    // Compute totalPrice if not provided
     if (!totalPrice) {
       const carData = await carModel.findById(carId);
       if (!carData) return res.status(404).json({ success: false, message: 'Car not found' });
@@ -104,19 +107,23 @@ const createBooking = async (req, res) => {
     });
 
     const savedBooking = await newBooking.save();
+
+    // --- Notification Email Admin ---
+    const fullBooking = await Booking.findById(savedBooking._id).populate('userId').populate('carId');
+    sendAdminNotificationEmail(fullBooking, fullBooking.userId, fullBooking.carId).catch(console.error);
+
     res.status(201).json({ success: true, data: savedBooking });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-
 // Get all bookings (admin only)
 const getAllBookings = async (req, res) => {
   try {
     const bookings = await Booking.find()
       .populate('userId', 'name email')
-      .populate('carId', 'carName pricePerDay')
+      .populate('carId', 'name pricePerDay')
       .sort({ createdAt: -1 });
 
     res.json({ success: true, data: bookings, count: bookings.length });
@@ -126,20 +133,17 @@ const getAllBookings = async (req, res) => {
 };
 
 const getAdminBookings = async (req, res) => {
-  // On s'assure d'avoir l'ID de l'admin en string
   const ownerId = req.user._id.toString();
 
   try {
     const bookings = await Booking.find()
       .populate({
         path: 'carId',
-        select: 'name pricePerDay owner images category ' // <-- On sélectionne 'owner' ici
+        select: 'name pricePerDay owner images category'
       })
       .populate('userId', 'name email')
-      .populate('startDate endDate status')
       .sort({ createdAt: -1 });
 
-    // Filtrage avec le bon nom de champ : 'owner'
     const adminBookings = bookings.filter(booking => {
       return (
         booking.carId && 
@@ -147,9 +151,6 @@ const getAdminBookings = async (req, res) => {
         booking.carId.owner.toString() === ownerId
       );
     });
-
-    // Debug pour confirmer dans ta console
-    console.log(`Admin ID: ${ownerId} | Réservations trouvées: ${adminBookings.length}`);
 
     res.status(200).json({ 
       success: true, 
@@ -176,7 +177,7 @@ const getUserBookings = async (req, res) => {
   }
 };
 
-// Update booking status
+// Update booking status (Envoie emails de confirmation/annulation)
 const updateBookingStatus = async (req, res) => {
   try {
     const { _id } = req.params;
@@ -186,27 +187,24 @@ const updateBookingStatus = async (req, res) => {
       _id,
       { status },
       { new: true }
-    ).populate('userId', 'name email').populate('carId', 'carName');
+    ).populate('userId').populate('carId');
 
     if (!booking) {
       return res.status(404).json({ success: false, message: 'Booking not found' });
     }
 
-    // Update car availability when booking status changes
-    if (status === 'approved') {
-      // Mark car as unavailable when booking is approved
-      await carModel.findByIdAndUpdate(
-        booking.carId,
-        { available: false },
-        { new: true }
-      );
-    } else if (status === 'cancelled') {
-      // Mark car as available again when booking is cancelled
-      await carModel.findByIdAndUpdate(
-        booking.carId,
-        { available: true },
-        { new: true }
-      );
+    // --- Gestion Disponibilité & Emails Client ---
+    if (status === 'approved' || status === 'confirmed') {
+      await carModel.findByIdAndUpdate(booking.carId, { available: false });
+      
+      // Email de confirmation au client
+      sendBookingConfirmationEmail(booking, booking.userId, booking.carId).catch(console.error);
+
+    } else if (status === 'cancelled' || status === 'rejected') {
+      await carModel.findByIdAndUpdate(booking.carId, { available: true });
+      
+      // Email d'annulation au client
+      sendCancellationEmail(booking, booking.userId, booking.carId, 0).catch(console.error);
     }
 
     res.json({ success: true, data: booking });
@@ -237,7 +235,7 @@ const getBooking = async (req, res) => {
     const { id } = req.params;
     const booking = await Booking.findById(id)
       .populate('userId', 'name email')
-      .populate('carId', 'carName pricePerDay');
+      .populate('carId', 'name pricePerDay');
 
     if (!booking) {
       return res.status(404).json({ success: false, message: 'Booking not found' });
@@ -248,7 +246,6 @@ const getBooking = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
 
 export {
   createBooking,
