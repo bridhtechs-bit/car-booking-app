@@ -135,7 +135,7 @@ const Dashboard = () => {
                   {cars.map((car) => (
                     <div key={car._id} className='vehicle-card'>
                       <div className='vehicle-category-badge'>{car.category}</div>
-                      <img src={car.image} alt={car.name} className='vehicle-image' />
+                      <img src={car.images[0]} alt={car.name} className='vehicle-image' />
                       <div className='vehicle-info'>
                         <h4>{car.name}</h4>
                         <p className='vehicle-specs'>
