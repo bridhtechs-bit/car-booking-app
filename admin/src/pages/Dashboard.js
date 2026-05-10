@@ -5,15 +5,18 @@ import {useDispatch, useSelector} from 'react-redux';
 import { FaCarAlt, FaCalendarCheck, FaUser } from "react-icons/fa";
 import { FaMoneyCheckDollar } from "react-icons/fa6";
 import { getAdminCar} from '../features/cars/carsSlice';
+import {getBookings} from '../features/bookings/bookingsSlice'
 
 const Dashboard = () => {
 
   //recuperation des données de voitures pour les statistiques
      const dispatch = useDispatch();
      const { cars, car, loading, isSuccess } = useSelector((state) => state.cars);
+     const { bookings } = useSelector((state) => state.bookings);
 
     useEffect(() => {
       dispatch(getAdminCar());
+      dispatch(getBookings());
     }, [dispatch]);
     
   // Données des voitures récemment ajoutées
@@ -73,7 +76,7 @@ const Dashboard = () => {
                 </div>
                 <div className='stats-details'>
                   <p>Total Cars</p>
-                  <h3>120</h3>
+                  <h3>{cars.length}</h3>
                 </div>
               </div>
               {/* bookings stats */}
@@ -88,7 +91,7 @@ const Dashboard = () => {
                 </div>
                 <div className='stats-details'>
                   <p>BOOKING EN COURS</p>
-                  <h3>12</h3>
+                  <h3>{bookings.length}</h3>
                 </div>
               </div>
               {/* revenue stats  */}
@@ -118,7 +121,7 @@ const Dashboard = () => {
                 </div>
                 <div className='stats-details'>
                   <p>Total UTILISATEUR</p>
-                  <h3>1200</h3>
+                  <h3>2</h3>
                 </div>
               </div>
             </div>
