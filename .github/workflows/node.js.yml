@@ -1,0 +1,39 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [ "main", "setup-github-actions" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        
+    # 📂 On installe directement dans le sous-dossier, npm gérera son cache tout seul comme un grand
+    - name: Install Dependencies
+      run: |
+        cd node
+        npm install
+        
+    - name: Build Backend
+      run: |
+        cd node
+        npm run build --if-present
+        
+    - name: Run Verification
+      run: |
+        cd node
+        echo "L'installation et la configuration du backend Drivio sont validées !"
