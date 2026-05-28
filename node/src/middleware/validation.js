@@ -368,6 +368,30 @@ export const validateCarFilters = [
   handleValidationErrors,
 ];
 
+export const validateSorting = [
+  query("sortBy")
+    .optional()
+    .trim()
+    .custom((value) => {
+      const validSortFields = ["price", "name", "brand", "date", "createdAt", "updatedAt", "status"];
+      if (!validSortFields.includes(value.toLowerCase())) {
+        throw new Error("Invalid sort field");
+      }
+      return true;
+    }),
+  query("order")
+    .optional()
+    .trim()
+    .custom((value) => {
+      const validOrders = ["asc", "desc"];
+      if (!validOrders.includes(value.toLowerCase())) {
+        throw new Error("Order must be 'asc' or 'desc'");
+      }
+      return true;
+    }),
+  handleValidationErrors,
+];
+
 export default {
   validateRegister,
   validateLogin,
@@ -380,5 +404,6 @@ export default {
   validateMongoId,
   validatePagination,
   validateCarFilters,
+  validateSorting,
   handleValidationErrors,
 };

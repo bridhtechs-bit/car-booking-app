@@ -1,5 +1,6 @@
 import Booking from '../models/bookingModel.js';
 import carModel from '../models/carModel.js';
+import { getPaginationParams, getPaginationMeta, getSortObject } from '../utils/pagination.js';
 import { 
   sendAdminNotificationEmail, 
   sendBookingConfirmationEmail, 
@@ -121,12 +122,26 @@ const createBooking = async (req, res) => {
 // Get all bookings (admin only)
 const getAllBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find()
-      .populate('userId', 'name email')
-      .populate('carId', 'name pricePerDay')
-      .sort({ createdAt: -1 });
+    const { page = 1, limit = 10, status, sortBy = 'date', order = 'desc' } = req.query;
+    
+    let query = {};
+    if (status) query.status = status;
+    
+    const { skip, limit: pageLimit, page: currentPage } = getPaginationParams(page, limit);
+    const sortObject = getSortObject(sortBy, order);
 
-    res.json({ success: true, data: bookings, count: bookings.length });
+    const [bookings, total] = await Promise.all([
+      Booking.find(query)
+        .populate('userId', 'name email')
+        .populate('carId', 'name pricePerDay')
+        .sort(sortObject)
+        .skip(skip)
+        .limit(pageLimit),
+      Booking.countDocuments(query)
+    ]);
+
+    const pagination = getPaginationMeta(currentPage, pageLimit, total);
+    res.json({ success: true, data: bookings, pagination });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
@@ -134,16 +149,24 @@ const getAllBookings = async (req, res) => {
 
 const getAdminBookings = async (req, res) => {
   const ownerId = req.user._id.toString();
+  const { page = 1, limit = 10, status, sortBy = 'date', order = 'desc' } = req.query;
 
   try {
-    const bookings = await Booking.find()
+    const { skip, limit: pageLimit, page: currentPage } = getPaginationParams(page, limit);
+    const sortObject = getSortObject(sortBy, order);
+
+    let query = {};
+    if (status) query.status = status;
+
+    const bookings = await Booking.find(query)
       .populate({
         path: 'carId',
         select: 'name pricePerDay owner images category'
       })
       .populate('userId', 'name email')
-      .sort({ createdAt: -1 });
+      .sort(sortObject);
 
+    // Filter by owner and apply pagination
     const adminBookings = bookings.filter(booking => {
       return (
         booking.carId && 
@@ -152,9 +175,14 @@ const getAdminBookings = async (req, res) => {
       );
     });
 
+    const total = adminBookings.length;
+    const paginatedBookings = adminBookings.slice(skip, skip + pageLimit);
+    const pagination = getPaginationMeta(currentPage, pageLimit, total);
+
     res.status(200).json({ 
       success: true, 
-      data: adminBookings 
+      data: paginatedBookings,
+      pagination
     });
 
   } catch (error) {
@@ -169,8 +197,25 @@ const getUserBookings = async (req, res) => {
     const userId = req.user?._id || req.params.id || req.query.userId;
     if (!userId) return res.status(400).json({ success: false, message: 'User id required' });
 
-    const bookings = await Booking.find({ userId }).populate('carId').sort({ createdAt: -1 });
-    res.json({ success: true, data: bookings });
+    const { page = 1, limit = 10, status, sortBy = 'date', order = 'desc' } = req.query;
+    
+    let query = { userId };
+    if (status) query.status = status;
+    
+    const { skip, limit: pageLimit, page: currentPage } = getPaginationParams(page, limit);
+    const sortObject = getSortObject(sortBy, order);
+
+    const [bookings, total] = await Promise.all([
+      Booking.find(query)
+        .populate('carId')
+        .sort(sortObject)
+        .skip(skip)
+        .limit(pageLimit),
+      Booking.countDocuments(query)
+    ]);
+
+    const pagination = getPaginationMeta(currentPage, pageLimit, total);
+    res.json({ success: true, data: bookings, pagination });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ success: false, message: error.message });
