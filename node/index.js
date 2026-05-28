@@ -22,6 +22,14 @@ import bookingRoute from './src/routes/bookingRoute.js';
 // Import Email Service
 import { initializeEmailService } from './src/services/emailService.js';
 import { startExpiredBookingsCron } from './src/jobs/expiredBookingsCron.js';
+const uploadDir = './uploads';
+import fs from 'fs';
+
+//verifier que le dossier d'upload existe, sinon le créer
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+  logger.info(`📁 Created uploads directory at ${uploadDir}`);
+}
 
 // Load environment variables FIRST
 dotenv.config();
@@ -37,6 +45,7 @@ app.use(morgan("combined", {
     write: (message) => logger.info(message.trim()),
   },
 }));
+app.use('/uploads', express.static(uploadDir)); // Servir les fichiers statiques du dossier uploads
 
 // ========== SECURITY MIDDLEWARE ==========
 // Helmet helps secure Express apps by setting various HTTP headers
@@ -143,6 +152,7 @@ app.use('/api/auth', authLimiter, authRoute);
 app.use('/api/cars', carRoute);
 app.use('/api/users', userRoute);
 app.use('/api/bookings', bookingRoute);
+app.use('/api/uploads', uploadRoute); // Route pour les uploads de fichiers
 
 // ========== ERROR HANDLING ==========
 // 404 Handler - must be after all routes

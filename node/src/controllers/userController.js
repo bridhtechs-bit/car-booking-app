@@ -1,10 +1,24 @@
 import User from '../models/userModel.js';
+import { getPaginationParams, getPaginationMeta, getSortObject } from '../utils/pagination.js';
 
 // Get all users
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}, '-password -refreshToken').sort({ createdAt: -1 });
-    res.json({ success: true, data: users, count: users.length });
+    const { page = 1, limit = 10, sortBy = 'date', order = 'desc' } = req.query;
+    
+    const { skip, limit: pageLimit, page: currentPage } = getPaginationParams(page, limit);
+    const sortObject = getSortObject(sortBy, order);
+
+    const [users, total] = await Promise.all([
+      User.find({}, '-password -refreshToken')
+        .sort(sortObject)
+        .skip(skip)
+        .limit(pageLimit),
+      User.countDocuments({})
+    ]);
+
+    const pagination = getPaginationMeta(currentPage, pageLimit, total);
+    res.json({ success: true, data: users, pagination });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

@@ -14,6 +14,7 @@ import {
   validateCancelBooking,
   validateMongoId,
   validatePagination,
+  validateSorting,
 } from '../middleware/validation.js';
 
 const router = express.Router();
@@ -26,13 +27,13 @@ router.put('/update/:_id', protect, validateMongoId, updateBookingStatus);
 router.post('/createbooking', protect, validateCreateBooking, createBooking);
 
 // Get bookings for authenticated user
-router.get('/my-bookings', protect, validatePagination, getUserBookings);
+router.get('/my-bookings', protect, validatePagination, validateSorting, getUserBookings);
 
 // Get bookings for admin (their cars' bookings)
-router.get('/admin-bookings', protect, validatePagination, getAdminBookings);
+router.get('/admin-bookings', protect, validatePagination, validateSorting, getAdminBookings);
     
 // Get all bookings
-router.get('/all-bookings', validatePagination, getAllBookings);
+router.get('/all-bookings', validatePagination, validateSorting, getAllBookings);
 
 // Get booking by ID with validation
 router.get('/:_id', validateMongoId, getBooking);
