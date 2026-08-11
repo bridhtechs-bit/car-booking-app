@@ -66,7 +66,7 @@ const authSlice = createSlice({
       })
       .addCase(loginAdmin.rejected, (state, action) => { 
         state.loading = false; 
-        state.error = action.payload; 
+        state.error = action.payload?.message || action.error?.message || 'Login failed'; 
       })
 
       //owner login cases
@@ -80,7 +80,7 @@ const authSlice = createSlice({
       })
       .addCase(loginOwner.rejected, (state, action) => { 
         state.loading = false; 
-        state.error = action.payload;
+        state.error = action.payload?.message || action.error?.message || 'Login failed'; 
       })
 
       //logout cases
@@ -94,7 +94,7 @@ const authSlice = createSlice({
       })
       .addCase(logoutAdmin.rejected, (state, action) => { 
         state.loading = false; 
-        state.error = action.payload;
+        state.error = action.payload?.message || action.error?.message || 'Logout failed'; 
       })
   }
 });

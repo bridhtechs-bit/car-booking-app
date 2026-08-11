@@ -1,8 +1,13 @@
+import dotenv from 'dotenv';
 import fs from 'fs';
 import multer from 'multer';
 import path from 'path';
 
-const uploadDir = path.join(process.cwd(), 'uploads');
+dotenv.config();
+
+const uploadPath = process.env.FILE_UPLOAD_PATH || 'uploads';
+const safeUploadPath = uploadPath.replace(/^[/\\]+/, '');
+const uploadDir = path.resolve(process.cwd(), safeUploadPath);
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -28,11 +33,13 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
+const maxFileSize = Number(process.env.MAX_FILE_SIZE) || 2 * 1024 * 1024;
+
 // configurer multer
 const upload = multer({
   storage,
   fileFilter,
-  limits: { fileSize: 2 * 1024 * 1024 } // limite de taille à 2MB
+  limits: { fileSize: maxFileSize }
 });
 
 export { upload };

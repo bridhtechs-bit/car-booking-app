@@ -8,6 +8,8 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import nodemailer from 'nodemailer';
 
+import dotenv from 'dotenv';
+import path from 'path';
 import connectDB from './src/config/db.js';
 import { errorHandler, notFoundHandler } from './src/middleware/errorHandler.js';
 import sanitizationMiddleware from './src/middleware/sanitizer.js';
@@ -18,12 +20,18 @@ import authRoute from './src/routes/authRoute.js';
 import carRoute from './src/routes/carRoute.js';
 import userRoute from './src/routes/userRoute.js';
 import bookingRoute from './src/routes/bookingRoute.js';
+import uploadRoute from './src/routes/uploadRoutes.js';
 
 // Import Email Service
 import { initializeEmailService } from './src/services/emailService.js';
 import { startExpiredBookingsCron } from './src/jobs/expiredBookingsCron.js';
-const uploadDir = './uploads';
 import fs from 'fs';
+
+dotenv.config();
+
+const uploadPath = process.env.FILE_UPLOAD_PATH || 'uploads';
+const safeUploadPath = uploadPath.replace(/^[/\\]+/, '');
+const uploadDir = path.resolve(process.cwd(), safeUploadPath);
 
 //verifier que le dossier d'upload existe, sinon le créer
 if (!fs.existsSync(uploadDir)) {

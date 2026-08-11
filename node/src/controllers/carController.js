@@ -1,6 +1,8 @@
+import fs from 'fs';
 import Car from '../models/carModel.js';
 import asyncHandler from 'express-async-handler';
 import { getPaginationParams, getPaginationMeta, getSortObject } from '../utils/pagination.js';
+import cloudinary from '../utils/cloudinary.js';
 
 const normalizeArrayField = (value) => {
   if (!value) return [];
@@ -16,9 +18,36 @@ const normalizeArrayField = (value) => {
   return [];
 };
 
-const buildImageUrls = (files, req) => {
+const getCloudinaryFolder = () => process.env.CLOUDINARY_FOLDER || 'drivio_uploads';
+
+const removeLocalFile = async (filePath) => {
+  try {
+    await fs.promises.unlink(filePath);
+  } catch (err) {
+    console.warn(`Unable to remove local file: ${filePath}`, err.message);
+  }
+};
+
+const uploadFilesToCloudinary = async (files) => {
   if (!files || !files.length) return [];
-  return files.map((file) => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`);
+
+  const folder = getCloudinaryFolder();
+
+  try {
+    const uploadPromises = files.map((file) =>
+      cloudinary.uploader.upload(file.path, {
+        folder,
+        resource_type: 'image',
+        use_filename: true,
+        unique_filename: true,
+      })
+    );
+
+    const results = await Promise.all(uploadPromises);
+    return results.map((result) => result.secure_url);
+  } finally {
+    await Promise.allSettled(files.map((file) => removeLocalFile(file.path)));
+  }
 };
 
 // GET all cars
@@ -193,7 +222,7 @@ const createCar = asyncHandler(async (req, res, next) => {
     throw error;
   }
 
-  const uploadedImages = buildImageUrls(req.files, req);
+  const uploadedImages = await uploadFilesToCloudinary(req.files);
   const bodyImages = normalizeArrayField(images);
   const carImages = uploadedImages.length ? uploadedImages : bodyImages;
 
@@ -259,7 +288,7 @@ const updateCar = asyncHandler(async (req, res, next) => {
     throw error;
   }
 
-  const uploadedImages = buildImageUrls(req.files, req);
+  const uploadedImages = await uploadFilesToCloudinary(req.files);
   const bodyImages = normalizeArrayField(req.body.images);
 
   // Lorsque des images sont uploadées, remplacer entièrement le tableau existant.
