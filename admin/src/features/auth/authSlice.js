@@ -28,10 +28,10 @@ const authSlice = createSlice({
   reducers: {
     loginAdminStart: (state) => {
       state.loading = true;
-      state.error = null;
     },
     loginAdminSuccess: (state, action) => {
       state.loading = false;
+      state.error = null;
       state.admin = action.payload;
       state.token = action.payload.accessToken;
       localStorage.setItem('adminToken', action.payload.accessToken);
@@ -43,10 +43,10 @@ const authSlice = createSlice({
     },
     loginOwnerStart: (state) => {
       state.loading = true;
-      state.error = null;
     },
     loginOwnerSuccess: (state, action) => {
       state.loading = false;
+      state.error = null;
       state.admin = action.payload;
       state.token = action.payload.accessToken;
       localStorage.setItem('adminToken', action.payload.accessToken);
