@@ -90,7 +90,7 @@ export const loginAdmin = (credentials) => async (dispatch) => {
     dispatch(loginAdminSuccess(res));
     return res;
   } catch (err) {
-    const error = err.response?.data?.message || err.response?.data || err.message || 'Login failed';
+    const error = err?.message || err || 'Login failed';
     dispatch(loginAdminFailure(error));
     return Promise.reject(error);
   }
@@ -103,7 +103,7 @@ export const loginOwner = (credentials) => async (dispatch) => {
     dispatch(loginOwnerSuccess(res));
     return res;
   } catch (err) {
-    const error = err.response?.data?.message || err.response?.data || err.message || 'Login failed';
+    const error = err?.message || err || 'Login failed';
     dispatch(loginOwnerFailure(error));
     return Promise.reject(error);
   }

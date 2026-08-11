@@ -43,6 +43,11 @@ const Login = () => {
                         <div className='form-container p-4'>
                             <h2 className='mb-4'>Admin Login</h2>
                             <p>Please login to your admin account</p>
+                            {error && (
+                              <div className='alert alert-danger mt-3' role='alert'>
+                                {typeof error === 'string' ? error : error.message || JSON.stringify(error)}
+                              </div>
+                            )}
                             <form onSubmit={formik.handleSubmit}>
                                 <div>
                                     <label>Email:</label>

@@ -54,8 +54,9 @@ const login = async (credentials) => {
     }
     return response.data;
   } catch (error) {
-    console.error('Login error:', error.response?.data || error.message);
-    throw error.response?.data || error.message;
+    const serverError = error.response?.data || error.message || 'Login failed';
+    console.error('Login error:', serverError);
+    throw serverError;
   }
 };
 
@@ -79,8 +80,9 @@ const loginOwner = async (credentials) => {
     }
     return response.data;
   } catch (error) {
-    console.error('Login owner error:', error.response?.data || error.message);
-    throw error.response?.data || error.message;
+    const serverError = error.response?.data || error.message || 'Login failed';
+    console.error('Login owner error:', serverError);
+    throw serverError;
   }
 };
 
