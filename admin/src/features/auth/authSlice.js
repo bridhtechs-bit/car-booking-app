@@ -10,33 +10,6 @@ const initialState = {
   isAuthenticated: getTokenFromLocalStorage() ? true : false,
 };
 
-export const loginAdmin = createAsyncThunk(
-  'auth/loginAdmin',
-  async (credentials, thunkAPI) => {
-    try {
-      const res = await authService.login(credentials);
-      return res;
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err.response?.data || err.message);
-    }
-  }
-);
-
-//owner login for admin panel access
-export const loginOwner = createAsyncThunk(
-  'auth/loginOwner',
-  async (credentials, thunkAPI) => {
-    try {
-      const res = await authService.loginOwner(credentials);
-      return res;
-    } catch (err) {
-      return thunkAPI.rejectWithValue(err.response?.data || err.message);
-    }
-  }
-);
-
-
-//logout admin user
 export const logoutAdmin = createAsyncThunk(
   'auth/logoutAdmin',
   async (_, thunkAPI) => {
@@ -49,41 +22,43 @@ export const logoutAdmin = createAsyncThunk(
   }
 );
 
-
 const authSlice = createSlice({
   name: 'auth',
   initialState,
-  reducers: {},
+  reducers: {
+    loginAdminStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    loginAdminSuccess: (state, action) => {
+      state.loading = false;
+      state.admin = action.payload;
+      state.token = action.payload.accessToken;
+      localStorage.setItem('adminToken', action.payload.accessToken);
+      state.isAuthenticated = true;
+    },
+    loginAdminFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload || 'Login failed';
+    },
+    loginOwnerStart: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    loginOwnerSuccess: (state, action) => {
+      state.loading = false;
+      state.admin = action.payload;
+      state.token = action.payload.accessToken;
+      localStorage.setItem('adminToken', action.payload.accessToken);
+      state.isAuthenticated = true;
+    },
+    loginOwnerFailure: (state, action) => {
+      state.loading = false;
+      state.error = action.payload || 'Login failed';
+    },
+  },
   extraReducers: (builder) => {
     builder
-      .addCase(loginAdmin.pending, (state) => { state.loading = true; state.error = null; })
-      .addCase(loginAdmin.fulfilled, (state, action) => {
-        state.loading = false;
-        state.admin = action.payload;
-        state.token = action.payload.accessToken;
-        localStorage.setItem('adminToken', action.payload.accessToken);
-        state.isAuthenticated = true;
-      })
-      .addCase(loginAdmin.rejected, (state, action) => { 
-        state.loading = false; 
-        state.error = action.payload?.message || action.error?.message || 'Login failed'; 
-      })
-
-      //owner login cases
-      .addCase(loginOwner.pending, (state) => { state.loading = true; state.error = null; })
-      .addCase(loginOwner.fulfilled, (state, action) => {
-        state.loading = false;
-        state.admin = action.payload;
-        state.token = action.payload.accessToken;
-        localStorage.setItem('adminToken', action.payload.accessToken);
-        state.isAuthenticated = true;
-      })
-      .addCase(loginOwner.rejected, (state, action) => { 
-        state.loading = false; 
-        state.error = action.payload?.message || action.error?.message || 'Login failed'; 
-      })
-
-      //logout cases
       .addCase(logoutAdmin.pending, (state) => { state.loading = true; state.error = null; })
       .addCase(logoutAdmin.fulfilled, (state) => {
         state.loading = false;
@@ -98,6 +73,41 @@ const authSlice = createSlice({
       })
   }
 });
+
+export const {
+  loginAdminStart,
+  loginAdminSuccess,
+  loginAdminFailure,
+  loginOwnerStart,
+  loginOwnerSuccess,
+  loginOwnerFailure,
+} = authSlice.actions;
+
+export const loginAdmin = (credentials) => async (dispatch) => {
+  dispatch(loginAdminStart());
+  try {
+    const res = await authService.login(credentials);
+    dispatch(loginAdminSuccess(res));
+    return res;
+  } catch (err) {
+    const error = err.response?.data?.message || err.response?.data || err.message || 'Login failed';
+    dispatch(loginAdminFailure(error));
+    return Promise.reject(error);
+  }
+};
+
+export const loginOwner = (credentials) => async (dispatch) => {
+  dispatch(loginOwnerStart());
+  try {
+    const res = await authService.loginOwner(credentials);
+    dispatch(loginOwnerSuccess(res));
+    return res;
+  } catch (err) {
+    const error = err.response?.data?.message || err.response?.data || err.message || 'Login failed';
+    dispatch(loginOwnerFailure(error));
+    return Promise.reject(error);
+  }
+};
 
 
 export default authSlice.reducer;
