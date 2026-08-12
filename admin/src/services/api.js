@@ -51,8 +51,11 @@ api.interceptors.response.use(
         case 401:
           // Unauthorized - token expired or invalid
           console.warn('Token expired or invalid. Redirecting to login.');
-          clearUserFromLocalStorage();
-          window.location.href = '/login';
+          // Do not redirect if the error is from a login attempt
+          if (error.config && !error.config.url.includes('/login')) {
+            clearUserFromLocalStorage();
+            window.location.href = '/login';
+          }
           break;
           
         case 403:
