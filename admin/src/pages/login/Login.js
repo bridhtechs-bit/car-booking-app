@@ -80,6 +80,11 @@ const Login = () => {
                                         <div className="invalid-feedback">{formik.errors.password}</div>
                                     )}
                                 </div>
+                                <div className="mt-2 text-end">
+                                    <Link to="/forgot-password" className="text-decoration-none small text-muted">
+                                        Forgot password?
+                                    </Link>
+                                </div>
                                 <button 
                                     type="submit" 
                                     className="login-btn mt-3"

@@ -439,11 +439,73 @@ export const sendCancellationEmail = async (booking, user, car, refundAmount) =>
   }
 };
 
+/**
+ * Send email verification link
+ */
+export const sendVerificationEmail = async (user, verificationToken) => {
+  try {
+    const verifyUrl = `${process.env.CLIENT_URL || 'http://localhost:3000'}/verify-email/${verificationToken}`;
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; }
+            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+            .header { background-color: #667eea; color: white; padding: 20px; border-radius: 5px; text-align: center; }
+            .content { margin: 20px 0; }
+            .button { display: inline-block; background-color: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
+            .footer { background-color: #f5f5f5; padding: 20px; text-align: center; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Verify Your Email Address</h1>
+            </div>
+
+            <div class="content">
+              <p>Hello ${user.name},</p>
+              <p>Thank you for registering! Please click the button below to verify your email address and activate full account capabilities.</p>
+
+              <center>
+                <a href="${verifyUrl}" class="button">Verify Email</a>
+              </center>
+
+              <p>Or copy this link into your browser:</p>
+              <p style="word-break: break-all; background: #f5f5f5; padding: 10px; border-radius: 5px;">
+                ${verifyUrl}
+              </p>
+
+              <p>This link will expire in 24 hours.</p>
+            </div>
+
+            <div class="footer">
+              <p>Car Booking App - Your Trusted Rental Partner</p>
+            </div>
+          </div>
+        </body>
+      </html>
+    `;
+
+    await sendEmail({
+      to: user.email,
+      subject: 'Verify your email - Car Booking App',
+      html,
+    });
+  } catch (error) {
+    logger.error('Failed to send verification email', error);
+    throw error;
+  }
+};
+
 export default {
   initializeEmailService,
   sendEmail,
   sendBookingConfirmationEmail,
   sendPasswordResetEmail,
+  sendVerificationEmail,
   sendWelcomeEmail,
   sendCancellationEmail,
   sendAdminNotificationEmail,

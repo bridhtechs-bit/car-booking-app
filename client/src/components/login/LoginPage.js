@@ -80,6 +80,12 @@ const LoginPage = () => {
                                     )}
                                 </div>
 
+                                <div className="mt-2 text-end">
+                                    <Link to="/forgot-password" className="forgot-link text-decoration-none">
+                                        Forgot password?
+                                    </Link>
+                                </div>
+
                             <div className="d-flex w-100">
                                 <button className="login-btn" type="submit">
                                 Login

@@ -9,6 +9,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
 import logger from "../utils/logger.js";
+import { isTokenBlacklisted } from "../config/refreshToken.js";
 
 /**
  * Protect - Verify JWT token and attach user to request
@@ -35,6 +36,15 @@ export const protect = async (req, res, next) => {
         success: false,
         statusCode: 401,
         message: "No token provided. Authentication is required",
+      });
+    }
+
+    if (isTokenBlacklisted(token)) {
+      logger.warn("Revoked token attempted", { ip: req.ip });
+      return res.status(401).json({
+        success: false,
+        statusCode: 401,
+        message: "Token has been revoked. Please log in again",
       });
     }
 

@@ -2,6 +2,8 @@ import './App.css';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Login from './pages/login/Login';
+import ForgotPassword from './pages/login/ForgotPassword';
+import ResetPassword from './pages/login/ResetPassword';
 import MainLayout from './components/layout/MainLayout';
 import Dashboard from './pages/Dashboard';
 import CarsList from './pages/CarsList';
@@ -19,6 +21,8 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={isAuthenticated ? <Navigate to="/admin" replace /> : <Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route 
           path="/admin" 
           element={<RequireAuth><MainLayout /></RequireAuth>}

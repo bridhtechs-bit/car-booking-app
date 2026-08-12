@@ -1,6 +1,8 @@
+import crypto from 'crypto';
 import { generateAccessToken, generateRefreshToken, verifyRefreshToken, revokeToken } from '../config/refreshToken.js';
 import User from '../models/userModel.js';
 import asyncHandler from 'express-async-handler';
+import { sendPasswordResetEmail, sendVerificationEmail } from '../services/emailService.js';
 
 
 const createUser = asyncHandler(async (req, res, next) => {
@@ -17,14 +19,171 @@ const createUser = asyncHandler(async (req, res, next) => {
   
     // Créer un nouvel utilisateur
     const user = await User.create({ name, email, password });
+    
+    // Générer et envoyer le jeton de vérification d'email
+    try {
+      const verificationToken = user.createEmailVerificationToken();
+      await user.save({ validateBeforeSave: false });
+      sendVerificationEmail(user, verificationToken).catch(console.error);
+    } catch (err) {
+      console.error('Erreur lors de la génération de l email de vérification:', err);
+    }
   
     res.status(201).json({
       success: true,
       _id: user._id,
       name: user.name,
       email: user.email,
+      isEmailVerified: user.isEmailVerified,
+      message: 'Compte créé avec succès. Un email de vérification vous a été envoyé.',
     });
   });
+
+
+// Demand de réinitialisation de mot de passe (Forgot Password)
+const forgotPassword = asyncHandler(async (req, res, next) => {
+  const { email } = req.body;
+
+  if (!email) {
+    const error = new Error("Veuillez fournir une adresse email.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    // Réponse générique pour éviter le username enumeration
+    return res.status(200).json({
+      success: true,
+      message: "Si un compte existe avec cet email, un lien de réinitialisation a été envoyé.",
+    });
+  }
+
+  // Obtenir le jeton de réinitialisation
+  const resetToken = user.createPasswordResetToken();
+  await user.save({ validateBeforeSave: false });
+
+  try {
+    await sendPasswordResetEmail(user, resetToken);
+    res.status(200).json({
+      success: true,
+      message: "Lien de réinitialisation envoyé par email.",
+    });
+  } catch (error) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    const err = new Error("L'email de réinitialisation n'a pas pu être envoyé.");
+    err.statusCode = 500;
+    throw err;
+  }
+});
+
+
+// Réinitialisation du mot de passe avec le token (Reset Password)
+const resetPassword = asyncHandler(async (req, res, next) => {
+  const { token } = req.params;
+  const { password } = req.body;
+
+  if (!password || password.length < 6) {
+    const error = new Error("Le mot de passe doit contenir au moins 6 caractères.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Hacher le token fourni pour le comparer à celui stocké
+  const passwordResetToken = crypto
+    .createHash('sha256')
+    .update(token)
+    .digest('hex');
+
+  const user = await User.findOne({
+    passwordResetToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    const error = new Error("Le jeton de réinitialisation est invalide ou a expiré.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  // Mettre à jour le mot de passe
+  user.password = password;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  user.passwordChangedAt = Date.now();
+
+  await user.save(); // Le hook pre-save bcrypt va hacher le mot de passe
+
+  res.status(200).json({
+    success: true,
+    message: "Mot de passe réinitialisé avec succès. Vous pouvez maintenant vous connecter.",
+  });
+});
+
+
+// Validation de l'email via le token
+const verifyEmail = asyncHandler(async (req, res, next) => {
+  const { token } = req.params;
+
+  const emailVerificationToken = crypto
+    .createHash('sha256')
+    .update(token)
+    .digest('hex');
+
+  const user = await User.findOne({
+    emailVerificationToken,
+    emailVerificationExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    const error = new Error("Le jeton de vérification est invalide ou a expiré.");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  user.isEmailVerified = true;
+  user.emailVerificationToken = undefined;
+  user.emailVerificationExpires = undefined;
+
+  await user.save({ validateBeforeSave: false });
+
+  res.status(200).json({
+    success: true,
+    message: "Votre adresse email a été vérifiée avec succès.",
+  });
+});
+
+
+// Renvoyer l'email de vérification
+const resendVerificationEmail = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id);
+
+  if (!user) {
+    const error = new Error("Utilisateur non trouvé.");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  if (user.isEmailVerified) {
+    return res.status(400).json({
+      success: false,
+      message: "Votre adresse email est déjà vérifiée.",
+    });
+  }
+
+  const verificationToken = user.createEmailVerificationToken();
+  await user.save({ validateBeforeSave: false });
+
+  await sendVerificationEmail(user, verificationToken);
+
+  res.status(200).json({
+    success: true,
+    message: "Un nouvel email de vérification a été envoyé.",
+  });
+});
 
 
 //fontion de connexion d'un user with manual validation
@@ -77,6 +236,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
       name: user.name,
       email: user.email,
       role: user.role,
+      isEmailVerified: user.isEmailVerified,
       accessToken, // JWT access token pour authentification
     });
   });
@@ -132,6 +292,7 @@ const loginOwner = asyncHandler(async (req, res, next) => {
       name: owner.name,
       email: owner.email,
       role: owner.role,
+      isEmailVerified: owner.isEmailVerified,
       accessToken, // JWT access token pour authentification
     });
   });
@@ -262,5 +423,9 @@ export {
     refreshAccessToken,
     updateUser,
     deleteUser,
-    logoutUser
+    logoutUser,
+    forgotPassword,
+    resetPassword,
+    verifyEmail,
+    resendVerificationEmail,
 }

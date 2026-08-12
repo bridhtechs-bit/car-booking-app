@@ -8,6 +8,9 @@ import Roote from "./routes/roote";
 import Home from "./pages/Home";
 import LoginPage from "./components/login/LoginPage";
 import RegisterPage from "./components/register/RegisterPage";
+import ForgotPasswordPage from "./components/login/ForgotPasswordPage";
+import ResetPasswordPage from "./components/login/ResetPasswordPage";
+import VerifyEmailPage from "./components/login/VerifyEmailPage";
 import CarListing from "./pages/CarListing";
 import CarDetails from "./pages/CarDetails";
 import MyBookings from "./pages/MyBookings";
@@ -43,6 +46,18 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <LoginPage/>
+      },
+      {
+        path: "/forgot-password",
+        element: <ForgotPasswordPage/>
+      },
+      {
+        path: "/reset-password/:token",
+        element: <ResetPasswordPage/>
+      },
+      {
+        path: "/verify-email/:token",
+        element: <VerifyEmailPage/>
       },
       {
         path: "/register",
