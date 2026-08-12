@@ -16,7 +16,7 @@ const createUser = asyncHandler(async (req, res, next) => {
     }
   
     // Créer un nouvel utilisateur
-    const user = await User.create(req.body);
+    const user = await User.create({ name, email, password });
   
     res.status(201).json({
       success: true,

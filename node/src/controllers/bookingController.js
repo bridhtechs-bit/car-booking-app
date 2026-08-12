@@ -225,18 +225,30 @@ const getUserBookings = async (req, res) => {
 // Update booking status (Envoie emails de confirmation/annulation)
 const updateBookingStatus = async (req, res) => {
   try {
-    const { _id } = req.params;
+    const _id = req.params._id || req.params.id;
     const { status } = req.body;
+
+    const bookingToUpdate = await Booking.findById(_id).populate('carId');
+    if (!bookingToUpdate) {
+      return res.status(404).json({ success: false, message: 'Booking not found' });
+    }
+
+    const userId = req.user?._id?.toString();
+    const userRole = req.user?.role;
+    const isOwner = bookingToUpdate.carId?.owner?.toString() === userId;
+    const isCreator = bookingToUpdate.userId?.toString() === userId;
+    const isAdmin = userRole === 'admin';
+
+    const canUpdate = isAdmin || isOwner || (isCreator && (status === 'cancelled' || status === 'rejected'));
+    if (!canUpdate) {
+      return res.status(403).json({ success: false, message: 'Accès refusé. Vous n\'êtes pas autorisé à modifier cette réservation.' });
+    }
 
     const booking = await Booking.findByIdAndUpdate(
       _id,
       { status },
       { new: true }
     ).populate('userId').populate('carId');
-
-    if (!booking) {
-      return res.status(404).json({ success: false, message: 'Booking not found' });
-    }
 
     // --- Gestion Disponibilité & Emails Client ---
     if (status === 'approved' || status === 'confirmed') {
@@ -261,12 +273,24 @@ const updateBookingStatus = async (req, res) => {
 // Delete booking
 const deleteBooking = async (req, res) => {
   try {
-    const { id } = req.params;
-    const booking = await Booking.findByIdAndDelete(id);
+    const id = req.params._id || req.params.id;
+    const bookingToDelete = await Booking.findById(id).populate('carId');
 
-    if (!booking) {
+    if (!bookingToDelete) {
       return res.status(404).json({ success: false, message: 'Booking not found' });
     }
+
+    const userId = req.user?._id?.toString();
+    const userRole = req.user?.role;
+    const isOwner = bookingToDelete.carId?.owner?.toString() === userId;
+    const isCreator = bookingToDelete.userId?.toString() === userId;
+    const isAdmin = userRole === 'admin';
+
+    if (!isAdmin && !isOwner && !isCreator) {
+      return res.status(403).json({ success: false, message: 'Accès refusé. Vous n\'êtes pas autorisé à supprimer cette réservation.' });
+    }
+
+    await Booking.findByIdAndDelete(id);
 
     res.json({ success: true, message: 'Booking deleted' });
   } catch (error) {
@@ -277,13 +301,25 @@ const deleteBooking = async (req, res) => {
 // Get booking by ID
 const getBooking = async (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.params._id || req.params.id;
     const booking = await Booking.findById(id)
       .populate('userId', 'name email')
-      .populate('carId', 'name pricePerDay');
+      .populate('carId', 'name pricePerDay owner');
 
     if (!booking) {
       return res.status(404).json({ success: false, message: 'Booking not found' });
+    }
+
+    const userId = req.user?._id?.toString();
+    const userRole = req.user?.role;
+    const bookingUserId = booking.userId?._id?.toString() || booking.userId?.toString();
+    const carOwnerId = booking.carId?.owner?.toString();
+    const isOwner = carOwnerId === userId;
+    const isCreator = bookingUserId === userId;
+    const isAdmin = userRole === 'admin';
+
+    if (!isAdmin && !isOwner && !isCreator) {
+      return res.status(403).json({ success: false, message: 'Accès refusé. Vous n\'êtes pas autorisé à consulter cette réservation.' });
     }
 
     res.json({ success: true, data: booking });

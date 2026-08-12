@@ -6,16 +6,18 @@ import {
   validateSorting,
 } from '../middleware/validation.js';
 
-// Get all users
-router.get('/allusers', validatePagination, validateSorting, getAllUsers);
+import { protect, adminProtect } from '../middleware/protect.js';
 
-// Get user by ID
-router.get('/:id', getUser);
+// Get all users (Admin only)
+router.get('/allusers', protect, adminProtect, validatePagination, validateSorting, getAllUsers);
 
-// Update user
-router.put('/:id', updateUser);
+// Get user by ID (Protected)
+router.get('/:id', protect, getUser);
 
-// Delete user
-router.delete('/:id', deleteUser);
+// Update user (Protected)
+router.put('/:id', protect, updateUser);
+
+// Delete user (Protected)
+router.delete('/:id', protect, deleteUser);
 
 export default router;

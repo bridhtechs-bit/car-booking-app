@@ -8,7 +8,7 @@ import {
   getUserBookings,
   getAdminBookings
 } from '../controllers/bookingController.js';
-import { protect } from "../middleware/protect.js";
+import { protect, adminProtect } from "../middleware/protect.js";
 import {
   validateCreateBooking,
   validateCancelBooking,
@@ -32,13 +32,13 @@ router.get('/my-bookings', protect, validatePagination, validateSorting, getUser
 // Get bookings for admin (their cars' bookings)
 router.get('/admin-bookings', protect, validatePagination, validateSorting, getAdminBookings);
     
-// Get all bookings
-router.get('/all-bookings', validatePagination, validateSorting, getAllBookings);
+// Get all bookings (Admin only)
+router.get('/all-bookings', protect, adminProtect, validatePagination, validateSorting, getAllBookings);
 
-// Get booking by ID with validation
-router.get('/:_id', validateMongoId, getBooking);
+// Get booking by ID with validation (Protected)
+router.get('/:_id', protect, validateMongoId, getBooking);
 
-// Delete booking with validation
-router.delete('/:_id', validateMongoId, deleteBooking);
+// Delete booking with validation (Protected)
+router.delete('/:_id', protect, validateMongoId, deleteBooking);
 
 export default router;

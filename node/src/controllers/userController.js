@@ -28,6 +28,11 @@ export const getAllUsers = async (req, res) => {
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (req.user?._id?.toString() !== id && req.user?.role !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Accès refusé. Vous ne pouvez supprimer que votre propre compte.' });
+    }
+
     const user = await User.findByIdAndDelete(id);
 
     if (!user) {
@@ -46,9 +51,19 @@ export const updateUser = async (req, res) => {
     const { id } = req.params;
     const { name, email, role } = req.body;
 
+    if (req.user?._id?.toString() !== id && req.user?.role !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Accès refusé. Vous ne pouvez modifier que votre propre compte.' });
+    }
+
+    const updateData = { name, email };
+    // Only admins can change roles
+    if (role && req.user?.role === 'admin') {
+      updateData.role = role;
+    }
+
     const user = await User.findByIdAndUpdate(
       id,
-      { name, email, role },
+      updateData,
       { new: true }
     ).select('-password -refreshToken');
 
@@ -66,6 +81,11 @@ export const updateUser = async (req, res) => {
 export const getUser = async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (req.user?._id?.toString() !== id && req.user?.role !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Accès refusé. Vous ne pouvez consulter que votre profil.' });
+    }
+
     const user = await User.findById(id).select('-password -refreshToken');
 
     if (!user) {
