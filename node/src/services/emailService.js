@@ -136,15 +136,11 @@ export const initializeEmailService = async () => {
         port: 587,
 
         secure: false,
+        requireTLS: true,
 
         auth: {
           user: process.env.GMAIL_USER,
           pass: process.env.GMAIL_PASSWORD,
-        },
-
-        // Keep TLS certificate validation enabled.
-        tls: {
-          rejectUnauthorized: true,
         },
       });
 
