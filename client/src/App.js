@@ -8,7 +8,7 @@ import Roote from "./routes/roote";
 import {AuthProvider} from "./context/authContext.js";
 const Home = lazy(()=>import("./pages/Home"));
 const LoginPage = lazy(()=>import("./components/login/LoginPage"));
-const RegisterPage = lazy(()=>import("./components/login/RegisterPage"));
+const RegisterPage = lazy(()=>import("./components/register/RegisterPage"));
 const ForgotPasswordPage = lazy(()=>import("./components/login/ForgotPasswordPage"));
 const ResetPasswordPage = lazy(()=>import("./components/login/ResetPasswordPage"));
 const VerifyEmailPage = lazy(()=>import("./components/login/VerifyEmailPage"));
