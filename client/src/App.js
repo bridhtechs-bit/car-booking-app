@@ -1,27 +1,33 @@
-import React from "react";
+import React, {lazy, Suspense} from "react";
 import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
 import "./index.css";
 import Roote from "./routes/roote";
-import Home from "./pages/Home";
-import LoginPage from "./components/login/LoginPage";
-import RegisterPage from "./components/register/RegisterPage";
-import ForgotPasswordPage from "./components/login/ForgotPasswordPage";
-import ResetPasswordPage from "./components/login/ResetPasswordPage";
-import VerifyEmailPage from "./components/login/VerifyEmailPage";
-import CarListing from "./pages/CarListing";
-import CarDetails from "./pages/CarDetails";
-import MyBookings from "./pages/MyBookings";
-import CarDetail from "./pages/carDetail";
-import { AuthProvider } from "./context/authContext";
+import {AuthProvider} from "./context/AuthContext.js";
+const Home = lazy(()=>import("./pages/Home"));
+const LoginPage = lazy(()=>import("./components/login/LoginPage"));
+const RegisterPage = lazy(()=>import("./components/login/RegisterPage"));
+const ForgotPasswordPage = lazy(()=>import("./components/login/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(()=>import("./components/login/ResetPasswordPage"));
+const VerifyEmailPage = lazy(()=>import("./components/login/VerifyEmailPage"));
+const CarListing = lazy(()=>import("./pages/CarListing"));
+const MyBookings = lazy(()=>import("./pages/MyBookings"));
+const CarDetail = lazy(()=>import("./pages/CarDetails"));
 
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <AuthProvider><Roote /></AuthProvider>,
+    element: (
+      <AuthProvider>
+        {/* suspense capture le chargement des composants */}
+        <Suspense>
+          <Roote />
+        </Suspense>
+      </AuthProvider>
+    ),
     children: [
       {
         path: "/",

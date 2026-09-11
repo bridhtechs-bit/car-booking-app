@@ -9,7 +9,10 @@ const Roote = () => {
         <>
             <div className="layout">
                 <NabBar />
-                <Outlet />
+                {/* Le Outlet est utilisé pour rendre les composants enfants en fonction de la route actuelle */}
+                <main>
+                    <Outlet />
+                </main>
             </div>
         </>
     )
