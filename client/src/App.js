@@ -5,7 +5,7 @@ import {
 } from "react-router-dom";
 import "./index.css";
 import Roote from "./routes/roote";
-import {AuthProvider} from "./context/AuthContext.js";
+import {AuthProvider} from "./context/authContext.js";
 const Home = lazy(()=>import("./pages/Home"));
 const LoginPage = lazy(()=>import("./components/login/LoginPage"));
 const RegisterPage = lazy(()=>import("./components/login/RegisterPage"));
