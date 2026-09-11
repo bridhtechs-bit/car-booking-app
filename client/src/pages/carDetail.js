@@ -59,6 +59,7 @@ const CarDetail = () => {
         <div className="col-md-6">
           <img
             src={car.images ? car.images[0] : car.image}
+            loading="lazy"
             alt={car.name}
             className="img-fluid rounded shadow"
           />

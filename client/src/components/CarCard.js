@@ -49,7 +49,7 @@ const CarCard = ({ car }) => {
   return (
     <div className={`car-card ${!isAvailable ? 'unavailable' : ''}`}>
       <div className="car-image">
-        <img src={car.images} alt={car.name} />
+        <img src={car.images} loading="lazy" alt={car.name} />
         <div className="car-badge">{car.category}</div>
         {!isAvailable && (
           <div className="car-unavailable">
