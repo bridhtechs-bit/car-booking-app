@@ -233,3 +233,276 @@
     font-size: 1.5rem;
   }
 }
+
+/* Mobile-first catalogue presentation */
+.car-listing-page {
+  background: #f4f7fb;
+  color: #0d1c2f;
+  padding: 24px 16px 96px;
+}
+
+.catalogue-shell {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.catalogue-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.catalogue-kicker {
+  color: #4338ca;
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  margin-bottom: 4px;
+}
+
+.catalogue-header h1 {
+  color: #0d1c2f;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  line-height: 1.15;
+  margin: 0 0 6px;
+}
+
+.catalogue-header p {
+  color: #58657a;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.catalogue-count {
+  align-items: center;
+  background: #e3e0ff;
+  border-radius: 999px;
+  color: #22158f;
+  display: flex;
+  flex-shrink: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  gap: 7px;
+  padding: 9px 12px;
+}
+
+.availability-dot {
+  background: #006b32;
+  border-radius: 50%;
+  height: 9px;
+  width: 9px;
+}
+
+.accessibility-note {
+  align-items: flex-start;
+  background: #e6eeff;
+  border-radius: 12px;
+  color: #25344b;
+  display: flex;
+  font-size: 0.86rem;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 13px;
+}
+
+.accessibility-note i {
+  color: #4338ca;
+  font-size: 1.25rem;
+}
+
+.catalogue-tools {
+  margin-bottom: 22px;
+}
+
+.catalogue-tools > label {
+  color: #0d1c2f;
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 7px;
+}
+
+.catalogue-search-row {
+  align-items: stretch;
+  display: flex;
+  gap: 8px;
+}
+
+.catalogue-search {
+  align-items: center;
+  background: #fff;
+  border: 1px solid #d8e1f0;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(13, 28, 47, 0.06);
+  display: flex;
+  flex: 1;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 14px;
+}
+
+.catalogue-search i {
+  color: #56627a;
+  font-size: 1.1rem;
+}
+
+.catalogue-search input {
+  border: 0;
+  color: #0d1c2f;
+  min-height: 44px;
+  outline: 0;
+  padding: 0;
+}
+
+.filter-toggle {
+  align-items: center;
+  background: #2a14b4;
+  border: 0;
+  border-radius: 12px;
+  color: #fff;
+  display: flex;
+  font-weight: 700;
+  gap: 7px;
+  justify-content: center;
+  min-width: 96px;
+  padding: 0 14px;
+}
+
+.quick-filters {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+  overflow-x: auto;
+  padding: 2px 1px 5px;
+  scrollbar-width: none;
+}
+
+.quick-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.quick-filter {
+  align-items: center;
+  background: #fff;
+  border: 1px solid #d8e1f0;
+  border-radius: 999px;
+  color: #25344b;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 0.84rem;
+  font-weight: 700;
+  gap: 5px;
+  min-height: 44px;
+  padding: 0 14px;
+}
+
+.quick-filter.active {
+  background: #4338ca;
+  border-color: #4338ca;
+  color: #fff;
+}
+
+.catalogue-sort-row {
+  align-items: center;
+  color: #58657a;
+  display: flex;
+  font-size: 0.85rem;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.catalogue-sort-row span {
+  margin-right: auto;
+}
+
+.catalogue-sort-row select {
+  background: #fff;
+  border: 1px solid #d8e1f0;
+  border-radius: 8px;
+  color: #2a14b4;
+  font-weight: 700;
+  min-height: 44px;
+  padding: 0 8px;
+}
+
+.listing-content {
+  gap: 20px;
+  grid-template-columns: 240px minmax(0, 1fr);
+}
+
+.filters-sidebar,
+.cars-main {
+  border: 1px solid #e2e8f3;
+  box-shadow: 0 4px 18px rgba(13, 28, 47, 0.06);
+}
+
+.cars-main {
+  min-width: 0;
+  padding: 0;
+}
+
+.cars-grid {
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+}
+
+@media (max-width: 992px) {
+  .listing-content {
+    display: block;
+  }
+
+  .filters-sidebar {
+    display: none;
+    margin-bottom: 16px;
+    position: static;
+  }
+
+  .listing-content.filters-open .filters-sidebar {
+    display: block;
+  }
+}
+
+@media (max-width: 600px) {
+  .car-listing-page {
+    padding: 18px 16px 88px;
+  }
+
+  .catalogue-header {
+    align-items: flex-start;
+  }
+
+  .catalogue-header h1 {
+    font-size: 1.65rem;
+  }
+
+  .catalogue-header p {
+    font-size: 0.9rem;
+  }
+
+  .catalogue-count {
+    font-size: 0.75rem;
+    padding: 8px 9px;
+  }
+
+  .catalogue-sort-row {
+    flex-wrap: wrap;
+  }
+
+  .catalogue-sort-row span {
+    flex-basis: 100%;
+  }
+
+  .cars-main {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+
+  .cars-grid {
+    display: flex;
+    flex-direction: column;
+  }
+}

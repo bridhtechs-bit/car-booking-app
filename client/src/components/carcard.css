@@ -222,3 +222,70 @@
     font-size: 0.85rem;
   }
 }
+
+/* Catalogue card treatment */
+.car-card {
+  border: 1px solid #e2e8f3;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(13, 28, 47, 0.08);
+}
+
+.car-image {
+  background: #dfe8f7;
+  height: 208px;
+}
+
+.car-badge {
+  background: #e3e0ff;
+  color: #22158f;
+  right: 12px;
+  top: 12px;
+}
+
+.car-info {
+  padding: 16px;
+}
+
+.car-info h3 {
+  color: #0d1c2f;
+  font-size: 1.2rem;
+}
+
+.car-specs {
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+
+.spec {
+  color: #58657a;
+}
+
+.spec i {
+  color: #4338ca;
+}
+
+.price {
+  color: #2a14b4;
+  font-size: 1.7rem;
+}
+
+.btn-details,
+.btn-book {
+  min-height: 48px;
+}
+
+.btn-book {
+  background: #2a14b4;
+}
+
+.btn-details {
+  background: #e6eeff;
+  color: #25344b;
+}
+
+.car-unavailable {
+  background: #ffdad6;
+  color: #93000a;
+  left: 12px;
+  top: 12px;
+}

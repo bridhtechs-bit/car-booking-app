@@ -1,12 +1,10 @@
 import React,{useEffect, useState} from "react";
 import { useNavigate } from "react-router-dom";
 import "./carcard.css";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 const CarCard = ({ car }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
   const { bookings } = useSelector((state) => state.booking);
 
   // Check availability based on:
@@ -50,7 +48,7 @@ const CarCard = ({ car }) => {
     <div className={`car-card ${!isAvailable ? 'unavailable' : ''}`}>
       <div className="car-image">
         <img 
-          src={car.images} 
+          src={Array.isArray(car.images) ? car.images[0] : car.images}
           loading="lazy" 
           alt={`${car.name} - ${car.category}`} 
         />
