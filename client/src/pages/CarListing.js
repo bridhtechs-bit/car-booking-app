@@ -5,6 +5,7 @@ import { getAllCars, setFilters } from "../features/car/carSlice";
 import { fetchUserBookings, resetBookingState } from "../features/auth/bookingSlice";
 import CarCard from "../components/CarCard";
 import useRefreshData from "../hooks/useRefreshData";
+import useDebounce from "../hooks/useDebounce";
 import "./carlisting.css";
 
 const CarListing = () => {
@@ -21,6 +22,9 @@ const CarListing = () => {
     search: searchParams.get("search") || "",
   });
 
+  // Debounce filter changes (400ms delay) to avoid excessive processing on every keystroke
+  const debouncedFilters = useDebounce(localFilters, 400);
+
   // ✅ Refresh cars and bookings data every 5 minutes
   // This ensures frontend stays in sync with backend changes
   // (e.g., when CRON job marks cars as available after booking expires)
@@ -32,10 +36,10 @@ const CarListing = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (localFilters.search || localFilters.category) {
-      dispatch(setFilters(localFilters));
+    if (debouncedFilters.search || debouncedFilters.category) {
+      dispatch(setFilters(debouncedFilters));
     }
-  }, [localFilters, dispatch]);
+  }, [debouncedFilters, dispatch]);
 
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
@@ -71,22 +75,22 @@ const CarListing = () => {
 
   const filteredResults = displayCars.filter((car) => {
     if (
-      localFilters.category &&
-      car.category.toLowerCase() !== localFilters.category.toLowerCase()
+      debouncedFilters.category &&
+      car.category.toLowerCase() !== debouncedFilters.category.toLowerCase()
     )
       return false;
     if (
-      localFilters.transmission &&
-      car.transmission !== localFilters.transmission
+      debouncedFilters.transmission &&
+      car.transmission !== debouncedFilters.transmission
     )
       return false;
-    if (localFilters.fuelType && car.fuelType !== localFilters.fuelType)
+    if (debouncedFilters.fuelType && car.fuelType !== debouncedFilters.fuelType)
       return false;
-    if (car.price < localFilters.minPrice || car.price > localFilters.maxPrice)
+    if (car.price < debouncedFilters.minPrice || car.price > debouncedFilters.maxPrice)
       return false;
     if (
-      localFilters.search &&
-      !car.name.toLowerCase().includes(localFilters.search.toLowerCase())
+      debouncedFilters.search &&
+      !car.name.toLowerCase().includes(debouncedFilters.search.toLowerCase())
     )
       return false;
     return true;

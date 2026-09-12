@@ -36,6 +36,11 @@ const userSchema = new mongoose.Schema({
   },
   emailVerificationToken: String,
   emailVerificationExpires: Date,
+  usageStats: {
+    uploadCount: { type: Number, default: 0 },
+    emailCount: { type: Number, default: 0 },
+    lastResetDate: { type: Date, default: Date.now },
+  },
 }, {
   timestamps: true
 });

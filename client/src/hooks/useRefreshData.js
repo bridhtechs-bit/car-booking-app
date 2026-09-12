@@ -14,24 +14,36 @@ export const useRefreshData = (intervalMs = 5 * 60 * 1000, shouldFetchBookings =
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Fetch data immediately on mount
-    dispatch(getAllCars());
-    if (shouldFetchBookings) {
-      dispatch(fetchUserBookings());
-    }
+    const refreshData = () => {
+      // Skip fetching if the tab is hidden to save bandwidth and server load
+      if (document.hidden) return;
 
-    // Set up interval to refresh data
-    const intervalId = setInterval(() => {
       console.log('🔄 Refreshing cars and bookings data...');
       dispatch(getAllCars());
       if (shouldFetchBookings) {
         dispatch(fetchUserBookings());
       }
-    }, intervalMs);
+    };
+
+    // Fetch data immediately on mount
+    refreshData();
+
+    // Set up interval to refresh data
+    const intervalId = setInterval(refreshData, intervalMs);
+
+    // Refresh when user returns to active tab
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        refreshData();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     // Cleanup interval on component unmount
     return () => {
       clearInterval(intervalId);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
     };
   }, [dispatch, intervalMs, shouldFetchBookings]);
 };

@@ -10,10 +10,13 @@ import fs from 'fs';
 
 // Configuration
 import connectDB from './src/config/db.js';
+import validateEnv from './src/config/validateEnv.js';
 
 // Middleware
 import { errorHandler, notFoundHandler } from './src/middleware/errorHandler.js';
 import sanitizationMiddleware from './src/middleware/sanitizer.js';
+import metricsMiddleware, { getMetricsSummary } from './src/middleware/metricsMiddleware.js';
+import { protect, adminProtect } from './src/middleware/protect.js';
 
 // Utils
 import logger from './src/utils/logger.js';
@@ -34,6 +37,7 @@ import { startExpiredBookingsCron } from './src/jobs/expiredBookingsCron.js';
 // ============================================================
 
 dotenv.config();
+validateEnv();
 
 // ============================================================
 // UPLOAD DIRECTORY
@@ -250,8 +254,20 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+// Upload rate limiter (strict: max 10 uploads per 15 min per IP)
+const uploadLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: {
+    success: false,
+    message: 'Upload limit reached. Maximum 10 file uploads per 15 minutes allowed per IP.',
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 // ============================================================
-// HEALTH CHECK
+// HEALTH CHECK & METRICS
 // ============================================================
 
 app.get('/', (req, res) => {
@@ -272,12 +288,21 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Admin Metrics endpoint
+app.get('/api/admin/metrics', protect, adminProtect, (req, res) => {
+  res.status(200).json({
+    success: true,
+    data: getMetricsSummary(),
+  });
+});
+
 // ============================================================
-// API RATE LIMITING
+// API RATE LIMITING & METRICS TRACKING
 // ============================================================
 
 app.use(
   '/api',
+  metricsMiddleware,
   limiter
 );
 
@@ -310,9 +335,10 @@ app.use(
   bookingRoute
 );
 
-// File uploads
+// File uploads (Strict rate limited)
 app.use(
   '/api/uploads',
+  uploadLimiter,
   uploadRoute
 );
 

@@ -45,8 +45,19 @@ api.interceptors.response.use(
   (response) => {
     return response;
   },
-  (error) => {
+  async (error) => {
+    const originalRequest = error.config;
+
     if (error.response) {
+      // Handle 429 Too Many Requests with exponential backoff retry (up to 3 times)
+      if (error.response.status === 429 && originalRequest && (originalRequest._retryCount || 0) < 3) {
+        originalRequest._retryCount = (originalRequest._retryCount || 0) + 1;
+        const delay = Math.pow(2, originalRequest._retryCount) * 1000; // 2s, 4s, 8s
+        console.warn(`[429 Too Many Requests] Retrying request (${originalRequest._retryCount}/3) in ${delay}ms...`);
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        return api(originalRequest);
+      }
+
       switch (error.response.status) {
         case 401:
           // Unauthorized - token expired or invalid
