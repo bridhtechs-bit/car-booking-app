@@ -45,9 +45,14 @@ const LoginPage = () => {
                         <div className='form-container p-4'>
                             <h2 className='mb-4'>Welcome Back</h2>
                             <p>Please login to your account</p>
-                            <form onSubmit={formik.handleSubmit}>
+                            {error && (
+                                <div className="alert alert-danger" role="alert">
+                                    {error.message || error}
+                                </div>
+                            )}
+                            <form onSubmit={formik.handleSubmit} noValidate>
                                 <div>
-                                    <label>Email:</label>
+                                    <label htmlFor="email">Email:</label>
                                     <input 
                                     className="form-control" 
                                     id="email"
@@ -57,14 +62,17 @@ const LoginPage = () => {
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     placeholder="enter your email"
+                                    autoComplete="email"
+                                    aria-invalid={Boolean(formik.touched.email && formik.errors.email)}
+                                    aria-describedby={formik.touched.email && formik.errors.email ? "email-error" : undefined}
                                     />
                                     {formik.touched.email && formik.errors.email && (
-                                    <small className="error">{formik.errors.email}</small>
+                                    <small className="error" id="email-error">{formik.errors.email}</small>
                                     )}
                                 </div>
 
                                 <div>
-                                    <label>Password:</label>
+                                    <label htmlFor="password">Password:</label>
                                     <input 
                                     className="form-control" 
                                     id="password"
@@ -74,9 +82,12 @@ const LoginPage = () => {
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     placeholder="enter your password"
+                                    autoComplete="current-password"
+                                    aria-invalid={Boolean(formik.touched.password && formik.errors.password)}
+                                    aria-describedby={formik.touched.password && formik.errors.password ? "password-error" : undefined}
                                     />
                                     {formik.touched.password && formik.errors.password && (
-                                    <small className="error">{formik.errors.password}</small>
+                                    <small className="error" id="password-error">{formik.errors.password}</small>
                                     )}
                                 </div>
 
@@ -87,8 +98,8 @@ const LoginPage = () => {
                                 </div>
 
                             <div className="d-flex w-100">
-                                <button className="login-btn" type="submit">
-                                Login
+                                <button className="login-btn" type="submit" disabled={loading}>
+                                {loading ? 'Logging in...' : 'Login'}
                                 </button>
                             </div>
                             </form>

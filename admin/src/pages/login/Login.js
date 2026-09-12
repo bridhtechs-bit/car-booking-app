@@ -48,10 +48,11 @@ const Login = () => {
                                 {typeof error === 'string' ? error : error.message || JSON.stringify(error)}
                               </div>
                             )}
-                            <form onSubmit={formik.handleSubmit}>
+                            <form onSubmit={formik.handleSubmit} noValidate>
                                 <div>
-                                    <label>Email:</label>
+                                    <label htmlFor="admin-email">Email:</label>
                                     <input
+                                        id="admin-email"
                                         type="email"
                                         name="email"
                                         value={formik.values.email}
@@ -59,15 +60,19 @@ const Login = () => {
                                         onBlur={formik.handleBlur}
                                         className='form-control'
                                         placeholder="enter your email"
+                                        autoComplete="email"
+                                        aria-invalid={Boolean(formik.touched.email && formik.errors.email)}
+                                        aria-describedby={formik.touched.email && formik.errors.email ? 'admin-email-error' : undefined}
                                     />
                                     
                                     {formik.touched.email && formik.errors.email && (
-                                        <div className="invalid-feedback">{formik.errors.email}</div>
+                                        <div className="invalid-feedback" id="admin-email-error">{formik.errors.email}</div>
                                     )}
                                 </div>
                                 <div className="mt-3">
-                                    <label>Password:</label>
+                                    <label htmlFor="admin-password">Password:</label>
                                     <input
+                                        id="admin-password"
                                         type="password"
                                         name="password"
                                         value={formik.values.password}
@@ -75,9 +80,12 @@ const Login = () => {
                                         onBlur={formik.handleBlur}
                                         className='form-control'
                                         placeholder='enter your password'
+                                        autoComplete="current-password"
+                                        aria-invalid={Boolean(formik.touched.password && formik.errors.password)}
+                                        aria-describedby={formik.touched.password && formik.errors.password ? 'admin-password-error' : undefined}
                                     />
                                     {formik.touched.password && formik.errors.password && (
-                                        <div className="invalid-feedback">{formik.errors.password}</div>
+                                        <div className="invalid-feedback" id="admin-password-error">{formik.errors.password}</div>
                                     )}
                                 </div>
                                 <div className="mt-2 text-end">

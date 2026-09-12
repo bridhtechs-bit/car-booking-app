@@ -23,7 +23,7 @@ const router = createBrowserRouter([
     element: (
       <AuthProvider>
         {/* suspense capture le chargement des composants */}
-        <Suspense>
+        <Suspense fallback={<div role="status" aria-live="polite">Chargement de la page...</div>}>
           <Roote />
         </Suspense>
       </AuthProvider>

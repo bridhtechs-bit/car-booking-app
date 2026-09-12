@@ -113,6 +113,8 @@ const MainLayout = () => {
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={() => setCollapsed(!collapsed)}
+            aria-label={collapsed ? 'Ouvrir le menu principal' : 'Réduire le menu principal'}
+            aria-expanded={!collapsed}
             style={{
               fontSize: '16px',
               width: 64,

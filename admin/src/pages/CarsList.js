@@ -20,7 +20,7 @@ useEffect(() => {
       <div style={{marginBottom:12}}>
         <button onClick={() => navigate('/admin/cars/new')}>Nouvelle voiture</button>
       </div>
-      {loading ? <div>Chargement...</div> : (
+      {loading ? <div role="status" aria-live="polite">Chargement des voitures...</div> : (
         <div style={{display:'grid', gridTemplateColumns:'1fr 1fr', gap:12}}>
           {cars.map(car => <CarItem key={car._id} car={car} />)}
         </div>

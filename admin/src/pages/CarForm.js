@@ -151,7 +151,7 @@ const CarForm = () => {
     <div className='container d-center' style={{ minHeight: '80vh', paddingBottom: '2rem' }}>
       <div className='car-form-container'>
         <h2>{id ? 'Éditer voiture' : 'Nouvelle voiture'}</h2>
-        {error && <div className="alert alert-danger">{typeof error === 'string' ? error : error.message || 'Erreur'}</div>}
+        {error && <div className="alert alert-danger" role="alert">{typeof error === 'string' ? error : error.message || 'Erreur'}</div>}
         <form onSubmit={formik.handleSubmit}>
           {/* Nom */}
           <div className="mb-3">

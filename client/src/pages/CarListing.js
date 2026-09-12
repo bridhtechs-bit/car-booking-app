@@ -110,8 +110,9 @@ const CarListing = () => {
 
             {/* Search */}
             <div className="filter-group">
-              <label>Search by Name</label>
+              <label htmlFor="car-search">Search by Name</label>
               <input
+                id="car-search"
                 type="text"
                 name="search"
                 value={localFilters.search}
@@ -123,8 +124,9 @@ const CarListing = () => {
 
             {/* Category */}
             <div className="filter-group">
-              <label>Category</label>
+              <label htmlFor="car-category">Category</label>
               <select
+                id="car-category"
                 name="category"
                 value={localFilters.category}
                 onChange={handleFilterChange}
@@ -142,8 +144,9 @@ const CarListing = () => {
 
             {/* Transmission */}
             <div className="filter-group">
-              <label>Transmission</label>
+              <label htmlFor="car-transmission">Transmission</label>
               <select
+                id="car-transmission"
                 name="transmission"
                 value={localFilters.transmission}
                 onChange={handleFilterChange}
@@ -157,8 +160,9 @@ const CarListing = () => {
 
             {/* Fuel Type */}
             <div className="filter-group">
-              <label>Fuel Type</label>
+              <label htmlFor="car-fuel-type">Fuel Type</label>
               <select
+                id="car-fuel-type"
                 name="fuelType"
                 value={localFilters.fuelType}
                 onChange={handleFilterChange}
@@ -174,9 +178,11 @@ const CarListing = () => {
 
             {/* Price Range */}
             <div className="filter-group">
-              <label>Price Range: ${localFilters.minPrice} - ${localFilters.maxPrice}/day</label>
+              <span id="price-range-label">Price Range: ${localFilters.minPrice} - ${localFilters.maxPrice}/day</span>
               <div className="price-inputs">
                 <input
+                  aria-label="Minimum price per day"
+                  aria-describedby="price-range-label"
                   type="range"
                   name="minPrice"
                   min="0"
@@ -186,6 +192,8 @@ const CarListing = () => {
                   className="price-range"
                 />
                 <input
+                  aria-label="Maximum price per day"
+                  aria-describedby="price-range-label"
                   type="range"
                   name="maxPrice"
                   min="0"
@@ -205,7 +213,7 @@ const CarListing = () => {
             </div>
 
             {loading ? (
-              <div className="loading">Loading cars...</div>
+              <div className="loading" role="status" aria-live="polite">Loading cars...</div>
             ) : filteredResults.length > 0 ? (
               <div className="cars-grid">
                 {filteredResults.map((car) => (

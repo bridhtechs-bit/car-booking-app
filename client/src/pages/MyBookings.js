@@ -115,19 +115,19 @@ const MyBookings = () => {
         </div>
 
         {success && (
-          <div className="alert alert-success">
+          <div className="alert alert-success" role="status" aria-live="polite">
             ✓ Booking cancelled successfully!
           </div>
         )}
 
         {error && (
-          <div className="alert alert-error">
+          <div className="alert alert-error" role="alert">
             ✗ Error: {error.message || "Something went wrong"}
           </div>
         )}
 
         {loading ? (
-          <div className="loading">Loading your bookings...</div>
+          <div className="loading" role="status" aria-live="polite">Loading your bookings...</div>
         ) : displayBookings.length > 0 ? (
           <div className="bookings-container">
             <div className="bookings-tabs">
@@ -217,8 +217,14 @@ const MyBookings = () => {
       {/* Cancel Confirmation Modal */}
       {confirmCancel && (
         <div className="modal-overlay" onClick={() => setConfirmCancel(null)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2>Cancel Booking?</h2>
+          <div
+            className="modal-content"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cancel-booking-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 id="cancel-booking-title">Cancel Booking?</h2>
             <p>Are you sure you want to cancel this booking? This action cannot be undone.</p>
             <div className="modal-actions">
               <button
