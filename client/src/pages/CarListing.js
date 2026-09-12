@@ -18,7 +18,7 @@ const CarListing = () => {
     transmission: "",
     fuelType: "",
     minPrice: 0,
-    maxPrice: 500,
+    maxPrice: null,
     search: searchParams.get("search") || "",
   });
   const [showFilters, setShowFilters] = useState(false);
@@ -65,7 +65,7 @@ const CarListing = () => {
       transmission: "",
       fuelType: "",
       minPrice: 0,
-      maxPrice: 500,
+      maxPrice: null,
       search: "",
     });
   };
@@ -93,7 +93,7 @@ const CarListing = () => {
     if (debouncedFilters.fuelType && car.fuelType !== debouncedFilters.fuelType)
       return false;
     const price = Number(car.pricePerDay || car.price || 0);
-    if (price < debouncedFilters.minPrice || price > debouncedFilters.maxPrice)
+    if (price < debouncedFilters.minPrice || (debouncedFilters.maxPrice !== null && price > debouncedFilters.maxPrice))
       return false;
     if (
       debouncedFilters.search &&
@@ -153,7 +153,7 @@ const CarListing = () => {
             <button type="button" className={localFilters.transmission === "automatic" ? "quick-filter active" : "quick-filter"} aria-pressed={localFilters.transmission === "automatic"} onClick={() => toggleQuickFilter("transmission", "automatic")}>Boîte auto</button>
             <button type="button" className={localFilters.fuelType === "Electric" ? "quick-filter active" : "quick-filter"} aria-pressed={localFilters.fuelType === "Electric"} onClick={() => toggleQuickFilter("fuelType", "Electric")}><i className="bi bi-lightning-charge" aria-hidden="true"></i> Électrique</button>
             <button type="button" className={localFilters.category === "suv" ? "quick-filter active" : "quick-filter"} aria-pressed={localFilters.category === "suv"} onClick={() => toggleQuickFilter("category", "suv")}>SUV</button>
-            <button type="button" className={localFilters.maxPrice === 80 ? "quick-filter active" : "quick-filter"} aria-pressed={localFilters.maxPrice === 80} onClick={() => setLocalFilters((previous) => ({ ...previous, maxPrice: previous.maxPrice === 80 ? 500 : 80 }))}>Prix &lt; 80 €/j</button>
+            <button type="button" className={localFilters.maxPrice === 80 ? "quick-filter active" : "quick-filter"} aria-pressed={localFilters.maxPrice === 80} onClick={() => setLocalFilters((previous) => ({ ...previous, maxPrice: previous.maxPrice === 80 ? null : 80 }))}>Prix &lt; 80 €/j</button>
           </div>
 
           <div className="catalogue-sort-row">
@@ -247,7 +247,7 @@ const CarListing = () => {
 
             {/* Price Range */}
             <div className="filter-group">
-              <span id="price-range-label">Price Range: ${localFilters.minPrice} - ${localFilters.maxPrice}/day</span>
+              <span id="price-range-label">Price Range: ${localFilters.minPrice} - {localFilters.maxPrice ?? "sans limite"}/day</span>
               <div className="price-inputs">
                 <input
                   aria-label="Minimum price per day"
@@ -267,7 +267,7 @@ const CarListing = () => {
                   name="maxPrice"
                   min="0"
                   max="500"
-                  value={localFilters.maxPrice}
+                  value={localFilters.maxPrice ?? 500}
                   onChange={handlePriceChange}
                   className="price-range"
                 />
