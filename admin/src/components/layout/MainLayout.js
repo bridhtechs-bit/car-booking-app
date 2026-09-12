@@ -18,7 +18,7 @@ const { Header, Sider, Content } = Layout;
 
 
 const MainLayout = () => {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => window.innerWidth < 768);
    const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -39,7 +39,8 @@ const MainLayout = () => {
             if(key === "logout"){
               navigate("/login");
             }else{
-              navigate(key)
+              navigate(key);
+              if (window.innerWidth < 768) setCollapsed(true);
             }
           }}
           

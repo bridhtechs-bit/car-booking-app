@@ -87,13 +87,13 @@ const CarDetails = () => {
   const finalPrice = totalPrice + insuranceCost + driverCost;
 
   if (loading) {
-    return <div className="loading-page">Loading car details...</div>;
+    return <div className="loading-page" role="status" aria-live="polite">Loading car details...</div>;
   }
 
   return (
     <div className="car-details-page">
       <div className="container">
-        <button onClick={() => navigate("/cars")} className="back-btn">
+        <button onClick={() => navigate("/cars")} className="back-btn" type="button">
           ← Back to Cars
         </button>
 
@@ -101,12 +101,12 @@ const CarDetails = () => {
           {/* Image Gallery */}
           <div className="image-section">
             <div className="main-image">
-              <img src={displayCar.image} alt={displayCar.name} />
+              <img src={displayCar.image || displayCar.images?.[0]} alt={displayCar.name || "Selected car"} />
               <div className="badge">{displayCar.category}</div>
             </div>
             <div className="thumbnail-gallery">
               {displayCar.images?.map((img, idx) => (
-                <img key={idx} src={img} alt={`View ${idx + 1}`} />
+                <img key={idx} src={img} alt={`${displayCar.name || "Car"} view ${idx + 1}`} loading="lazy" />
               ))}
             </div>
           </div>
@@ -215,25 +215,35 @@ const CarDetails = () => {
               ) : (
                 <form onSubmit={formik.handleSubmit} className="booking-form">
                   <div className="form-group">
-                    <label>Start Date</label>
+                    <label htmlFor="booking-start-date">Start Date</label>
                     <input
+                      id="booking-start-date"
                       type="date"
                       name="startDate"
                       value={formik.values.startDate}
                       onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      aria-invalid={Boolean(formik.touched.startDate && formik.errors.startDate)}
+                      aria-describedby={formik.errors.startDate ? "booking-start-error" : undefined}
                       required
                     />
+                    {formik.touched.startDate && formik.errors.startDate && <span className="field-error" id="booking-start-error">{formik.errors.startDate}</span>}
                   </div>
 
                   <div className="form-group">
-                    <label>End Date</label>
+                    <label htmlFor="booking-end-date">End Date</label>
                     <input
+                      id="booking-end-date"
                       type="date"
                       name="endDate"
                       value={formik.values.endDate}
                       onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      aria-invalid={Boolean(formik.touched.endDate && formik.errors.endDate)}
+                      aria-describedby={formik.errors.endDate ? "booking-end-error" : undefined}
                       required
                     />
+                    {formik.touched.endDate && formik.errors.endDate && <span className="field-error" id="booking-end-error">{formik.errors.endDate}</span>}
                   </div>
 
                   {days > 0 && (

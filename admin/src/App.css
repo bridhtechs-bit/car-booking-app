@@ -229,4 +229,39 @@ a {
 }
 /* style end here */
 
+@media (max-width: 767px) {
+    .ant-layout-sider {
+        flex: 0 0 0 !important;
+        max-width: 0 !important;
+        min-width: 0 !important;
+        width: 0 !important;
+    }
+
+    .ant-layout-sider.ant-layout-sider-collapsed {
+        flex: 0 0 0 !important;
+        max-width: 0 !important;
+        min-width: 0 !important;
+        width: 0 !important;
+    }
+
+    .ant-layout-content {
+        margin: 16px 10px !important;
+        padding: 14px !important;
+    }
+
+    .ant-layout-header {
+        height: 56px !important;
+        line-height: 56px !important;
+    }
+
+    .car-form-container {
+        padding: 16px;
+    }
+
+    .car-form-container h2 {
+        font-size: 1.5rem;
+        text-align: left;
+    }
+}
+
 

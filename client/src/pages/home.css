@@ -71,3 +71,26 @@
     font-size: 0.9rem;
   }
 }
+
+@media (max-width: 768px) {
+  .home-container {
+    overflow-x: hidden;
+  }
+
+  .cta-section {
+    padding: 44px 16px 88px;
+  }
+
+  .cta-section .container {
+    width: 100%;
+  }
+
+  .cta-btn {
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    min-height: 48px;
+    padding: 12px 24px;
+    width: min(100%, 320px);
+  }
+}

@@ -63,11 +63,11 @@ const Dashboard = () => {
             </div>
             
             {/* Stats Cards */}
-            <div className='stats-card-section'>
+            <div className='stats-card-section' aria-label="Statistiques principales">
               {/* cars stats */}
               <div className='stats-card'>
                 <div className='stats-header'>
-                  <div className='stats-icon d-flex align-items-center'>
+                  <div className='stats-icon d-flex align-items-center' aria-hidden="true">
                     <FaCarAlt />
                   </div>
                   <div className='stats-info'>
@@ -82,7 +82,7 @@ const Dashboard = () => {
               {/* bookings stats */}
               <div className='stats-card'>
                 <div className='stats-header'>
-                  <div className='stats-icon d-flex align-items-center'>
+                  <div className='stats-icon d-flex align-items-center' aria-hidden="true">
                     <FaCalendarCheck />
                   </div>
                   <div className='stats-info'>
@@ -97,7 +97,7 @@ const Dashboard = () => {
               {/* revenue stats  */}
               <div className='stats-card'>
                 <div className='stats-header'>
-                  <div className='stats-icon d-flex align-items-center'>
+                  <div className='stats-icon d-flex align-items-center' aria-hidden="true">
                     <FaMoneyCheckDollar />
                   </div>
                   <div className='stats-info'>
@@ -112,7 +112,7 @@ const Dashboard = () => {
               {/* users stats */}
               <div className='stats-card'>
                 <div className='stats-header'>
-                  <div className='stats-icon d-flex align-items-center'>
+                  <div className='stats-icon d-flex align-items-center' aria-hidden="true">
                     <FaUser />
                   </div>
                   <div className='stats-info'>
@@ -135,10 +135,10 @@ const Dashboard = () => {
                   <Link to="/admin/cars" className='view-all-link'>View All Fleet →</Link>
                 </div>
                 <div className='vehicle-cards'>
-                  {cars.map((car) => (
+                  {loading ? <div role="status" aria-live="polite">Chargement des véhicules...</div> : cars.map((car) => (
                     <div key={car._id} className='vehicle-card'>
                       <div className='vehicle-category-badge'>{car.category}</div>
-                      <img src={car.images[0]} alt={car.name} className='vehicle-image' />
+                      <img src={car.images?.[0]} alt={car.name} className='vehicle-image' loading="lazy" />
                       <div className='vehicle-info'>
                         <h4>{car.name}</h4>
                         <p className='vehicle-specs'>

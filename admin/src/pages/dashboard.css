@@ -306,4 +306,88 @@
     .vehicle-cards {
         grid-template-columns: 1fr;
     }
+
+    .dashboard-header {
+        padding: 16px 0;
+    }
+
+    .dashboard-header h1 {
+        font-size: 1.65rem;
+        line-height: 1.2;
+    }
+
+    .stats-card-section {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 18px;
+    }
+
+    .stats-card {
+        min-width: 0;
+        padding: 14px;
+    }
+
+    .stats-header {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+    }
+
+    .stats-icon {
+        margin-bottom: 4px;
+        padding: 10px;
+    }
+
+    .stats-info {
+        font-size: 0.72rem;
+        margin-left: 4px;
+        padding: 4px;
+    }
+
+    .stats-details p {
+        font-size: 0.72rem;
+        line-height: 1.2;
+    }
+
+    .stats-details h3 {
+        font-size: 1.25rem;
+    }
+
+    .main-content-section {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 24px;
+    }
+
+    .recent-vehicles,
+    .fleet-distribution,
+    .live-tracking {
+        padding: 16px;
+    }
+
+    .section-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .vehicle-cards {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .vehicle-image {
+        height: 180px;
+    }
+
+    .tracking-map {
+        height: 180px;
+    }
+}
+
+@media (max-width: 380px) {
+    .stats-card-section {
+        grid-template-columns: 1fr;
+    }
 }
