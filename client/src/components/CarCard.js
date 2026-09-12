@@ -49,11 +49,15 @@ const CarCard = ({ car }) => {
   return (
     <div className={`car-card ${!isAvailable ? 'unavailable' : ''}`}>
       <div className="car-image">
-        <img src={car.images} loading="lazy" alt={car.name} />
+        <img 
+          src={car.images} 
+          loading="lazy" 
+          alt={`${car.name} - ${car.category}`} 
+        />
         <div className="car-badge">{car.category}</div>
         {!isAvailable && (
-          <div className="car-unavailable">
-            {car.available ? 'Booked' : 'Not Available'}
+          <div className="car-unavailable" role="status">
+            🚫 {car.available ? 'Booked' : 'Not Available'}
           </div>
         )}
       </div>
@@ -62,17 +66,17 @@ const CarCard = ({ car }) => {
         <h3>{car.name}</h3>
 
         <div className="car-rating">
-          <span className="stars">★ {car.rating}</span>
+          <span className="stars" aria-label={`Rating ${car.rating} out of 5 stars`}>★ {car.rating}</span>
           <span className="reviews">({car.reviews} reviews)</span>
         </div>
 
         <div className="car-specs">
           <div className="spec">
-            <i className="bi bi-speedometer"></i>
+            <i className="bi bi-speedometer" aria-hidden="true"></i>
             <span>{car.transmission}</span>
           </div>
           <div className="spec">
-            <i className="bi bi-fuel-pump"></i>
+            <i className="bi bi-fuel-pump" aria-hidden="true"></i>
             <span>{car.fuelType}</span>
           </div>
         </div>
@@ -83,13 +87,18 @@ const CarCard = ({ car }) => {
         </div>
 
         <div className="car-actions">
-          <button className="btn-details" onClick={handleViewDetails}>
+          <button 
+            className="btn-details" 
+            onClick={handleViewDetails}
+            aria-label={`View details for ${car.name}`}
+          >
             Details
           </button>
           <button 
             className="btn-book" 
             onClick={handleBook}
             disabled={!isAvailable}
+            aria-label={isAvailable ? `Book ${car.name} for $${car.pricePerDay} per day` : `${car.name} is currently not available`}
           >
             {isAvailable ? 'Book Now' : 'Not Available'}
           </button>

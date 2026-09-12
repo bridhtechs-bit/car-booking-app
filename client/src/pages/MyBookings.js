@@ -94,10 +94,10 @@ const MyBookings = () => {
 
   const getStatusDisplay = (status) => {
     const statusMap = {
-      pending: "Pending",
-      approved: "Confirmed",
-      completed: "Completed",
-      cancelled: "Cancelled"
+      pending: "⏳ Pending",
+      approved: "✓ Confirmed",
+      completed: "✓ Completed",
+      cancelled: "🚫 Cancelled"
     };
     return statusMap[status] || status;
   };
@@ -105,6 +105,17 @@ const MyBookings = () => {
   const canCancelBooking = (status) => {
     return status === "approved" || status === "pending";
   };
+
+  // Close modal on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && confirmCancel) {
+        setConfirmCancel(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [confirmCancel]);
 
   return (
     <div className="my-bookings-page">
@@ -130,10 +141,10 @@ const MyBookings = () => {
           <div className="loading" role="status" aria-live="polite">Loading your bookings...</div>
         ) : displayBookings.length > 0 ? (
           <div className="bookings-container">
-            <div className="bookings-tabs">
-              <button className="tab-btn active">All Bookings</button>
-              <button className="tab-btn">Upcoming</button>
-              <button className="tab-btn">Completed</button>
+            <div className="bookings-tabs" role="tablist" aria-label="Booking Filters">
+              <button className="tab-btn active" role="tab" aria-selected="true">All Bookings</button>
+              <button className="tab-btn" role="tab" aria-selected="false">Upcoming</button>
+              <button className="tab-btn" role="tab" aria-selected="false">Completed</button>
             </div>
 
             <div className="bookings-list">
@@ -141,7 +152,7 @@ const MyBookings = () => {
                 <div key={booking._id} className="booking-card">
                   <div className="booking-image">
                     {booking.carId?.images?.length > 0 ? (
-                      <img src={booking.carId.images[0]} alt={booking.carId.name} />
+                      <img src={booking.carId.images[0]} alt={`${booking.carName || 'Vehicle'} image`} />
                     ) : (
                       <div className="placeholder-image">No Image</div>
                     )}
@@ -159,6 +170,7 @@ const MyBookings = () => {
                         className={`booking-status ${getStatusColor(
                           booking.status
                         )}`}
+                        role="status"
                       >
                         {getStatusDisplay(booking.status)}
                       </span>
@@ -186,11 +198,14 @@ const MyBookings = () => {
                   </div>
 
                   <div className="booking-actions">
-                    <button className="btn-view-details">View Details</button>
+                    <button className="btn-view-details" aria-label={`View details for ${booking.carName}`}>
+                      View Details
+                    </button>
                     {canCancelBooking(booking.status) && (
                       <button
                         className="btn-cancel"
                         onClick={() => setConfirmCancel(booking._id)}
+                        aria-label={`Cancel booking for ${booking.carName}`}
                       >
                         Cancel Booking
                       </button>
@@ -203,7 +218,7 @@ const MyBookings = () => {
         ) : (
           <div className="no-bookings">
             <div className="empty-state">
-              <i className="bi bi-calendar-x"></i>
+              <i className="bi bi-calendar-x" aria-hidden="true"></i>
               <h2>No Bookings Yet</h2>
               <p>You haven't made any car reservations yet.</p>
               <a href="/cars" className="btn-browse">
@@ -222,14 +237,16 @@ const MyBookings = () => {
             role="dialog"
             aria-modal="true"
             aria-labelledby="cancel-booking-title"
+            aria-describedby="cancel-booking-desc"
             onClick={(e) => e.stopPropagation()}
           >
             <h2 id="cancel-booking-title">Cancel Booking?</h2>
-            <p>Are you sure you want to cancel this booking? This action cannot be undone.</p>
+            <p id="cancel-booking-desc">Are you sure you want to cancel this booking? This action cannot be undone.</p>
             <div className="modal-actions">
               <button
                 className="btn-cancel-modal"
                 onClick={() => setConfirmCancel(null)}
+                aria-label="Keep this booking"
               >
                 Keep Booking
               </button>
@@ -237,6 +254,7 @@ const MyBookings = () => {
                 className="btn-confirm-cancel"
                 onClick={() => handleCancelBooking(confirmCancel)}
                 disabled={loading}
+                aria-label="Confirm cancellation"
               >
                 {loading ? "Cancelling..." : "Yes, Cancel"}
               </button>

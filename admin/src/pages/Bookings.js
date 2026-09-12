@@ -50,6 +50,19 @@ const Bookings = () => {
   };
 
 
+  const getStatusIconText = (status) => {
+    switch (status) {
+      case "pending":
+        return "⏳ Pending";
+      case "approved":
+        return "✓ Approved";
+      case "cancelled":
+        return "🚫 Cancelled";
+      default:
+        return status;
+    }
+  };
+
   return (
     <div className="bookings-page">
       <div className='container'>
@@ -61,25 +74,31 @@ const Bookings = () => {
             </div> 
 
               {loading ? (
-                <p>Loading...</p>
+                <p role="status" aria-live="polite">Loading...</p>
               ) : error ? (
-                <p className="error">{error}</p>
+                <p className="error" role="alert">{error}</p>
               ) : displayBookings.length > 0 ? (
                 <div className="bookings-list d-flex">
                   {displayBookings.map((booking) => (
                     <div key={booking._id} className="booking-card">
                         <div className="car-image">
-                          <img src={booking.carId.images[0]} alt={booking.carId.category} />
+                          <img 
+                            src={booking.carId?.images?.[0] || 'https://via.placeholder.com/160x100?text=Car'} 
+                            alt={`${booking.carId?.name || 'Vehicle'} - ${booking.carId?.category || ''}`} 
+                          />
                         </div>
                         <div className='car-detail'>
-                          <h3>Name: {booking.carId.name}</h3>
-                          <h3>Category: {booking.carId.category}</h3>
+                          <h3>Name: {booking.carId?.name || booking.carName}</h3>
+                          <h3>Category: {booking.carId?.category || 'General'}</h3>
                           <p>Du: {new Date(booking.startDate).toLocaleDateString()} Au {new Date(booking.endDate).toLocaleDateString()}</p>
-                          <p>Status: <span style={{ color: getStatusColor(booking.status) }}>{booking.status}</span></p>
+                          <p>Status: <span className="status-badge" role="status" style={{ color: getStatusColor(booking.status), fontWeight: 'bold' }}>{getStatusIconText(booking.status)}</span></p>
                         </div>
                         <div className="actions">
                           {booking.status !== "cancelled" && (
-                            <button onClick={() => handleUpdateStatus(booking._id, booking.status)}>
+                            <button 
+                              onClick={() => handleUpdateStatus(booking._id, booking.status)}
+                              aria-label={booking.status === "pending" ? `Approve booking for ${booking.carId?.name || booking.carName}` : `Set booking for ${booking.carId?.name || booking.carName} to pending`}
+                            >
                               {booking.status === "pending" ? "Approve" : "Set Pending"}
                             </button>
                           )}
